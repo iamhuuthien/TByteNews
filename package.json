@@ -1,0 +1,27 @@
+{
+  "name": "TByteNews",
+  "version": "1.0.0",
+  "description": "A web application for news management with an admin panel and main site.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev -p 4000",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@shadcn/ui": "^0.0.4",
+    "@supabase/supabase-js": "latest",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "tailwindcss": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "typescript": "latest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
