@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import supabase from '../../utils/supabaseClient';
-import styles from '../../styles/main.module.css';
 import Head from 'next/head';
 
 const PostDetailPage = () => {
@@ -11,9 +10,7 @@ const PostDetailPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (id) {
-      fetchPost();
-    }
+    if (id) fetchPost();
     // eslint-disable-next-line
   }, [id]);
 
@@ -41,8 +38,8 @@ const PostDetailPage = () => {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (!post) return <div>Post not found</div>;
+  if (loading) return <div style={{ textAlign: 'center', margin: '60px 0', color: '#888' }}>Đang tải bài viết...</div>;
+  if (!post) return <div style={{ textAlign: 'center', margin: '60px 0', color: '#888' }}>Không tìm thấy bài viết</div>;
 
   return (
     <>
@@ -53,58 +50,82 @@ const PostDetailPage = () => {
         <meta property="og:description" content={post.content.substring(0, 150)} />
         {post.thumbnail && <meta property="og:image" content={post.thumbnail} />}
       </Head>
-      <div className={styles.container}>
-        <button onClick={() => router.push('/')} className={styles.backButton}>
-          ← Back to Home
-        </button>
-        <div className={styles.postHeader}>
+      <div style={{ background: 'var(--background-color)', minHeight: '100vh', padding: '32px 0' }}>
+        <div className="postDetailCard">
+          <button onClick={() => router.push('/')} className="backButton">
+            ← Quay về trang chủ
+          </button>
+          <div className="postDetailHeader">
+            <img
+              src={post.thumbnail || '/default-avatar.png'}
+              alt="Thumbnail"
+              className="postAvatar"
+              onError={e => {
+                const target = e.target as HTMLImageElement;
+                target.src = "https://via.placeholder.com/48";
+              }}
+            />
+            <div>
+              <h1 className="postTitle">{post.title}</h1>
+              <div className="postMetaInfo">
+                <span>{new Date(post.created_at).toLocaleDateString()}</span>
+                <span>
+                  {post.views || 0} lượt xem
+                  <span className="postBadge">Hot</span>
+                </span>
+              </div>
+            </div>
+          </div>
           {post.thumbnail && (
-            <img src={post.thumbnail} alt={post.title} className={styles.postImage} />
+            <img
+              src={post.thumbnail}
+              alt={post.title}
+              className="postImage"
+              onError={e => {
+                const target = e.target as HTMLImageElement;
+                target.src = "https://via.placeholder.com/800x350";
+              }}
+            />
           )}
-          <h1 className={styles.postTitle}>{post.title}</h1>
-          <p className={styles.postDate}>
-            {new Date(post.created_at).toLocaleDateString()}
-          </p>
-          <p className={styles.postViews}>{post.views || 0} views</p>
-        </div>
-        <div
-          className={styles.postContent}
-          dangerouslySetInnerHTML={{ __html: post.content }}
-        />
-        <div className={styles.shareButtons}>
-          <button
-            onClick={() =>
-              window.open(
-                `https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(post.title)}`,
-                '_blank'
-              )
-            }
-            className={styles.twitterShare}
-          >
-            Share on Twitter
-          </button>
-          <button
-            onClick={() =>
-              window.open(
-                `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`,
-                '_blank'
-              )
-            }
-            className={styles.facebookShare}
-          >
-            Share on Facebook
-          </button>
-          <button
-            onClick={() =>
-              window.open(
-                `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(window.location.href)}&title=${encodeURIComponent(post.title)}`,
-                '_blank'
-              )
-            }
-            className={styles.linkedinShare}
-          >
-            Share on LinkedIn
-          </button>
+          <div
+            className="postContent"
+            dangerouslySetInnerHTML={{ __html: post.content }}
+          />
+          <div className="shareButtons">
+            <button
+              onClick={() =>
+                window.open(
+                  `https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(post.title)}`,
+                  '_blank'
+                )
+              }
+              className="shareButton twitterShare"
+            >
+              Chia sẻ Twitter
+            </button>
+            <button
+              onClick={() =>
+                window.open(
+                  `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`,
+                  '_blank'
+                )
+              }
+              className="shareButton facebookShare"
+            >
+              Chia sẻ Facebook
+            </button>
+            <button
+              onClick={() =>
+                window.open(
+                  `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(window.location.href)}&title=${encodeURIComponent(post.title)}`,
+                  '_blank'
+                )
+              }
+              className="shareButton linkedinShare"
+            >
+              Chia sẻ LinkedIn
+            </button>
+          </div>
         </div>
       </div>
     </>

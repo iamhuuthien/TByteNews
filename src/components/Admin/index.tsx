@@ -23,7 +23,12 @@ const Admin = () => {
         if (editingPostId) {
             await supabase.from('posts').update({ title, content }).eq('id', editingPostId);
         } else {
-            await supabase.from('posts').insert([{ title, content }]);
+            await await supabase.from('posts').insert([{
+                title,
+                content,
+                thumbnail: '',
+                views: 0
+            }]);
         }
         setTitle('');
         setContent('');

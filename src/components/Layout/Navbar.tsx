@@ -9,8 +9,9 @@ const Navbar = () => {
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
-    setIsDarkMode(savedTheme === 'dark');
-    document.documentElement.classList.toggle('dark-mode', savedTheme === 'dark');
+    const isDark = savedTheme === 'dark';
+    setIsDarkMode(isDark);
+    document.documentElement.classList.toggle('dark-mode', isDark);
   }, []);
 
   const toggleTheme = () => {

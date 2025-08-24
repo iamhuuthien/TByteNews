@@ -10,6 +10,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [resetSent, setResetSent] = useState(false);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -41,6 +42,20 @@ const LoginPage = () => {
     }
   };
 
+  const handleResetPassword = async () => {
+    if (!email) {
+      setError('Vui lòng nhập email để lấy lại mật khẩu.');
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    setResetSent(false);
+    const { error } = await supabase.auth.resetPasswordForEmail(email);
+    if (error) setError(error.message);
+    else setResetSent(true);
+    setLoading(false);
+  };
+
   return (
     <>
       <Head>
@@ -50,6 +65,11 @@ const LoginPage = () => {
         <div className={styles.loginCard}>
           <h1>Admin Login</h1>
           {error && <p className={styles.errorMessage}>{error}</p>}
+          {resetSent && (
+            <p className={styles.successMessage}>
+              Đã gửi email đặt lại mật khẩu! Vui lòng kiểm tra hộp thư.
+            </p>
+          )}
           <form onSubmit={handleLogin}>
             <div className={styles.formGroup}>
               <label htmlFor="email">Email</label>
@@ -77,6 +97,15 @@ const LoginPage = () => {
               disabled={loading}
             >
               {loading ? 'Logging in...' : 'Log In'}
+            </button>
+            <button
+              type="button"
+              className={styles.loginButton}
+              style={{ marginTop: 10, background: '#2196f3' }}
+              onClick={handleResetPassword}
+              disabled={loading}
+            >
+              Quên mật khẩu
             </button>
           </form>
         </div>

@@ -76,7 +76,7 @@ pre code {
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 1rem;
 }
 
 .text-center {
@@ -87,6 +87,8 @@ pre code {
 input, textarea, select, button {
   font-family: inherit;
   font-size: inherit;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Responsive design */
@@ -94,4 +96,147 @@ input, textarea, select, button {
   h1 {
     font-size: 2rem;
   }
+  .container {
+    padding: 0.5rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .container {
+    padding: 0.3rem;
+  }
+}
+
+/* Post detail card */
+.postDetailCard {
+  background: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: 0 4px 32px var(--shadow-color);
+  padding: 2rem;
+  margin: 0 auto 2rem;
+  max-width: 800px;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s, color 0.3s;
+}
+
+@media (max-width: 900px) {
+  .postDetailCard {
+    padding: 1rem;
+  }
+}
+
+.postDetailCard::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, var(--primary-color) 0%, transparent 70%);
+  opacity: 0.12;
+  z-index: 0;
+}
+
+.postDetailHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.postAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #eee;
+  border: 2px solid var(--primary-color);
+  box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.postTitle {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0;
+  color: var(--primary-color);
+}
+
+.postMetaInfo {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  color: var(--text-color);
+}
+
+.postBadge {
+  background: var(--primary-color);
+  color: #fff;
+  border-radius: 12px;
+  padding: 2px 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+.postImage {
+  width: 100%;
+  max-height: 350px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 16px var(--shadow-color);
+}
+
+.postContent {
+  font-size: 1.1rem;
+  line-height: 1.85;
+  color: var(--text-color);
+  margin-bottom: 2rem;
+  z-index: 1;
+  position: relative;
+}
+
+.shareButtons {
+  display: flex;
+  gap: 0.7rem;
+  margin-top: 1.2rem;
+  justify-content: flex-end;
+}
+
+.shareButton {
+  padding: 0.7rem 1.2rem;
+  border-radius: 6px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.twitterShare { background: #1da1f2; color: #fff; }
+.facebookShare { background: #4267B2; color: #fff; }
+.linkedinShare { background: #0077b5; color: #fff; }
+
+.shareButton:hover {
+  opacity: 0.85;
+  box-shadow: 0 4px 16px var(--shadow-color);
+}
+
+.backButton {
+  margin-bottom: 1.2rem;
+  background: var(--primary-color);
+  color: #fff;
+  border-radius: 6px;
+  padding: 0.5rem 1.2rem;
+  border: none;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background 0.3s;
+}
+
+.backButton:hover {
+  background: var(--secondary-color);
 }
