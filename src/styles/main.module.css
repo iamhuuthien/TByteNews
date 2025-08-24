@@ -72,13 +72,13 @@
 .postTitle {
   font-size: 1.5rem;
   margin: 1rem 1rem 0.5rem;
-  color: #333;
+  color: var(--text-color);
 }
 
 .postSummary {
   flex: 1;
   padding: 0 1rem;
-  color: #666;
+  color: var(--text-color);
   font-size: 1rem;
   line-height: 1.5;
 }
@@ -88,7 +88,7 @@
   justify-content: space-between;
   padding: 0.7rem 1rem;
   border-top: 1px solid #eee;
-  color: #888;
+  color: var(--text-color);
   font-size: 0.95rem;
 }
 
@@ -291,4 +291,25 @@
   .aboutSection {
     padding: 1rem;
   }
+}
+
+.loadingSpinnerWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 120px;
+}
+
+.loadingSpinner {
+  width: 48px;
+  height: 48px;
+  border: 6px solid #eee;
+  border-top: 6px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: auto;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

@@ -1,0 +1,22 @@
+{
+  "homeTitle": "TByte News",
+  "loadingPosts": "Đang tải bài viết...",
+  "noPosts": "Chưa có bài viết nào.",
+  "createPost": "Tạo bài viết mới",
+  "editPost": "Sửa bài viết",
+  "deletePost": "Xóa",
+  "views": "lượt xem",
+  "createdAt": "Ngày tạo",
+  "adminDashboard": "Admin Dashboard",
+  "signOut": "Đăng xuất",
+  "totalPosts": "Tổng bài viết",
+  "totalViews": "Tổng lượt xem",
+  "postTitle": "Tiêu đề",
+  "postContent": "Nội dung",
+  "postThumbnail": "Ảnh thumbnail (URL)",
+  "uploadThumbnail": "Hoặc upload ảnh thumbnail",
+  "submit": "Lưu",
+  "cancel": "Hủy",
+  "success": "Thành công",
+  "error": "Lỗi"
+}

@@ -5,6 +5,7 @@ import styles from '../../styles/admin.module.css';
 import Head from 'next/head';
 import AddPostModal from '../../components/Admin/AddPostModal';
 import EditPostModal from '../../components/Admin/EditPostModal';
+import LoadingSpinner from 'components/UI/LoadingSpinner';
 
 const AdminPage: React.FC = () => {
   const router = useRouter();
@@ -211,7 +212,7 @@ const AdminPage: React.FC = () => {
         <div className={styles.postsList}>
           <h2 style={{ marginBottom: 18 }}>Danh sách bài viết</h2>
           {loading ? (
-            <p>Đang tải bài viết...</p>
+            <LoadingSpinner />
           ) : posts.length > 0 ? (
             <div className={styles.postsGridAdmin}>
               {posts.map((post) => (

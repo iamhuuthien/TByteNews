@@ -10,9 +10,9 @@
 
 /* Dark mode variables */
 .dark-mode {
-  --background-color: #1a1a1a;
-  --text-color: #f0f0f0;
-  --card-bg: #2a2a2a;
+  --background-color: #181818;
+  --text-color: #f5f5f5;
+  --card-bg: #232323;
   --border-color: #444;
   --shadow-color: rgba(0, 0, 0, 0.5);
   --primary-color: #3a8eff;
@@ -239,4 +239,76 @@ input, textarea, select, button {
 
 .backButton:hover {
   background: var(--secondary-color);
+}
+
+.backCircleButton {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px var(--shadow-color);
+  cursor: pointer;
+  transition: width 0.25s, background 0.2s, box-shadow 0.2s;
+  position: relative;
+  margin-right: 12px;
+  outline: none;
+  overflow: hidden;
+}
+
+.backIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.backText {
+  opacity: 0;
+  margin-left: 0;
+  white-space: nowrap;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: opacity 0.25s, margin-left 0.25s;
+  color: #fff;
+}
+
+.backCircleButton:hover,
+.backCircleButton:focus {
+  width: 170px;
+  border-radius: 24px;
+  background: var(--secondary-color);
+  box-shadow: 0 4px 16px var(--shadow-color);
+}
+
+.backCircleButton:hover .backText,
+.backCircleButton:focus .backText {
+  opacity: 1;
+  margin-left: 0px;
+}
+
+.backCircleButton:hover .backIcon,
+.backCircleButton:focus .backIcon {
+  color: #fff;
+}
+
+@media (max-width: 600px) {
+  .backCircleButton {
+    width: 38px;
+    height: 38px;
+    font-size: 1.2rem;
+  }
+  .backCircleButton:hover,
+  .backCircleButton:focus {
+    width: 120px;
+  }
+  .backText {
+    font-size: 0.95rem;
+  }
 }

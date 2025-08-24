@@ -1,0 +1,22 @@
+{
+  "homeTitle": "TByte News",
+  "loadingPosts": "Loading posts...",
+  "noPosts": "No posts yet.",
+  "createPost": "Create Post",
+  "editPost": "Edit Post",
+  "deletePost": "Delete",
+  "views": "views",
+  "createdAt": "Created At",
+  "adminDashboard": "Admin Dashboard",
+  "signOut": "Sign Out",
+  "totalPosts": "Total Posts",
+  "totalViews": "Total Views",
+  "postTitle": "Title",
+  "postContent": "Content",
+  "postThumbnail": "Thumbnail (URL)",
+  "uploadThumbnail": "Or upload thumbnail",
+  "submit": "Save",
+  "cancel": "Cancel",
+  "success": "Success",
+  "error": "Error"
+}

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import supabase from '../../utils/supabaseClient';
 import Head from 'next/head';
+import LoadingSpinner from '../../components/UI/LoadingSpinner';
+import styles from '../../styles/postDetail.module.css';
 
 const PostDetailPage = () => {
   const router = useRouter();
@@ -10,8 +12,10 @@ const PostDetailPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (id) fetchPost();
-    // eslint-disable-next-line
+    if (!id) return;
+    (async () => {
+      await fetchPost();
+    })();
   }, [id]);
 
   const fetchPost = async () => {
@@ -26,11 +30,7 @@ const PostDetailPage = () => {
       if (error) throw error;
       setPost(data);
 
-      // Tăng số lượt xem
-      await supabase
-        .from('posts')
-        .update({ views: (data.views || 0) + 1 })
-        .eq('id', id);
+      await supabase.rpc('increment_views', { row_id: id });
     } catch (error) {
       console.error('Error fetching post:', error);
     } finally {
@@ -38,40 +38,63 @@ const PostDetailPage = () => {
     }
   };
 
-  if (loading) return <div style={{ textAlign: 'center', margin: '60px 0', color: '#888' }}>Đang tải bài viết...</div>;
-  if (!post) return <div style={{ textAlign: 'center', margin: '60px 0', color: '#888' }}>Không tìm thấy bài viết</div>;
+  if (loading)
+    return (
+      <div className={styles.loadingWrapper}>
+        <LoadingSpinner />
+      </div>
+    );
+
+  if (!post)
+    return (
+      <div className={styles.noPost}>Không tìm thấy bài viết</div>
+    );
+
+  const plainTextContent = post.content.replace(/<[^>]+>/g, '').substring(0, 150);
 
   return (
     <>
       <Head>
         <title>{post.title} - TByteNews</title>
-        <meta name="description" content={post.content.substring(0, 150)} />
+        <meta name="description" content={plainTextContent} />
         <meta property="og:title" content={post.title} />
-        <meta property="og:description" content={post.content.substring(0, 150)} />
+        <meta property="og:description" content={plainTextContent} />
         {post.thumbnail && <meta property="og:image" content={post.thumbnail} />}
       </Head>
-      <div style={{ background: 'var(--background-color)', minHeight: '100vh', padding: '32px 0' }}>
-        <div className="postDetailCard">
-          <button onClick={() => router.push('/')} className="backButton">
-            ← Quay về trang chủ
-          </button>
-          <div className="postDetailHeader">
+      <div className={styles.pageWrapper}>
+        <div className={styles.postDetailCard}>
+          <div className={styles.backButtonWrapper}>
+            <button
+              onClick={() => router.back()}
+              className={styles.backCircleButton}
+              title="Quay về trang chủ"
+              aria-label="Quay về trang chủ"
+            >
+              <span className={styles.backIcon}>
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                  <path d="M14 5L8 11L14 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </span>
+              <span className={styles.backText}>Quay về trang chủ</span>
+            </button>
+          </div>
+          <div className={styles.postDetailHeader}>
             <img
               src={post.thumbnail || '/default-avatar.png'}
               alt="Thumbnail"
-              className="postAvatar"
-              onError={e => {
+              className={styles.postAvatar}
+              onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.src = "https://via.placeholder.com/48";
               }}
             />
             <div>
-              <h1 className="postTitle">{post.title}</h1>
-              <div className="postMetaInfo">
+              <h1 className={styles.postTitle}>{post.title}</h1>
+              <div className={styles.postMetaInfo}>
                 <span>{new Date(post.created_at).toLocaleDateString()}</span>
                 <span>
                   {post.views || 0} lượt xem
-                  <span className="postBadge">Hot</span>
+                  <span className={styles.postBadge}>Hot</span>
                 </span>
               </div>
             </div>
@@ -80,18 +103,18 @@ const PostDetailPage = () => {
             <img
               src={post.thumbnail}
               alt={post.title}
-              className="postImage"
-              onError={e => {
+              className={styles.postImage}
+              onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.src = "https://via.placeholder.com/800x350";
               }}
             />
           )}
           <div
-            className="postContent"
+            className={styles.postContent}
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
-          <div className="shareButtons">
+          <div className={styles.shareButtons}>
             <button
               onClick={() =>
                 window.open(
@@ -99,9 +122,10 @@ const PostDetailPage = () => {
                   '_blank'
                 )
               }
-              className="shareButton twitterShare"
+              className={`${styles.shareButton} ${styles.twitterShare}`}
+              aria-label="Chia sẻ Twitter"
             >
-              Chia sẻ Twitter
+              <span className={styles.shareText}>Chia sẻ Twitter</span>
             </button>
             <button
               onClick={() =>
@@ -110,9 +134,10 @@ const PostDetailPage = () => {
                   '_blank'
                 )
               }
-              className="shareButton facebookShare"
+              className={`${styles.shareButton} ${styles.facebookShare}`}
+              aria-label="Chia sẻ Facebook"
             >
-              Chia sẻ Facebook
+              <span className={styles.shareText}>Chia sẻ Facebook</span>
             </button>
             <button
               onClick={() =>
@@ -121,9 +146,10 @@ const PostDetailPage = () => {
                   '_blank'
                 )
               }
-              className="shareButton linkedinShare"
+              className={`${styles.shareButton} ${styles.linkedinShare}`}
+              aria-label="Chia sẻ LinkedIn"
             >
-              Chia sẻ LinkedIn
+              <span className={styles.shareText}>Chia sẻ LinkedIn</span>
             </button>
           </div>
         </div>
