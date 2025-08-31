@@ -23,6 +23,7 @@ body {
   --warning-color: #ffb300;
   --gradient-main: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   --gradient-dark: linear-gradient(135deg, #23272f 0%, #181a20 100%);
+  --icon-color: #ffffff;
 }
 
 .dark-mode {
@@ -44,6 +45,7 @@ body {
   --warning-color: #ffb300;
   --gradient-main: linear-gradient(135deg, #23272f 0%, #181a20 100%);
   --gradient-dark: linear-gradient(135deg, #23272f 0%, #23272f 100%);
+  --icon-color: #e6eef8;
 }
 
 * {

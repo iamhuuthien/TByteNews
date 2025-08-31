@@ -8,32 +8,40 @@ const Navbar = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
+    const savedTheme = typeof window !== 'undefined' ? localStorage.getItem('theme') : null;
     const isDark = savedTheme === 'dark';
     setIsDarkMode(isDark);
     document.documentElement.classList.toggle('dark-mode', isDark);
   }, []);
 
   const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-    document.documentElement.classList.toggle('dark-mode');
-    localStorage.setItem('theme', isDarkMode ? 'light' : 'dark');
+    const newIsDark = !isDarkMode;
+    setIsDarkMode(newIsDark);
+    document.documentElement.classList.toggle('dark-mode', newIsDark);
+    try {
+      localStorage.setItem('theme', newIsDark ? 'dark' : 'light');
+    } catch (e) {
+      /* ignore */
+    }
   };
 
   return (
     <nav className={styles.navbar}>
       <div className={styles.navContainer}>
-        <Link href="/">
-          <div className={styles.logo}>TByteNews</div>
+        <Link href="/" legacyBehavior>
+          <a className={styles.logo}>TByteNews</a>
         </Link>
+
         <div className={styles.navLinks}>
-          <Link href="/">
-            <span className={router.pathname === '/' ? styles.activeLink : styles.navLink}>Home</span>
+          <Link href="/" legacyBehavior>
+            <a className={router.pathname === '/' ? styles.activeLink : styles.navLink} aria-current={router.pathname === '/' ? 'page' : undefined}>Home</a>
           </Link>
-          <Link href="/about">
-            <span className={router.pathname === '/about' ? styles.activeLink : styles.navLink}>About</span>
+
+          <Link href="/about" legacyBehavior>
+            <a className={router.pathname === '/about' ? styles.activeLink : styles.navLink} aria-current={router.pathname === '/about' ? 'page' : undefined}>About</a>
           </Link>
-          <button onClick={toggleTheme} className={styles.themeToggle}>
+
+          <button onClick={toggleTheme} className={styles.themeToggle} aria-pressed={isDarkMode}>
             {isDarkMode ? '☀️ Light' : '🌙 Dark'}
           </button>
         </div>

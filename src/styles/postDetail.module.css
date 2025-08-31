@@ -1,283 +1,224 @@
+/* Consolidated, variable-driven Post Detail styles
+   - Typography & responsive improvements
+   - uses root variables from global.css; local variables for typographic scale
+*/
+
+/* Local helper variables (can reference global variables) */
+.postDetailCard,
+.pageWrapper {
+  --card-radius: 18px;
+  --card-padding: 2rem;
+  --card-max-width: 800px;
+  --avatar-size: 54px;
+  --avatar-border: 2px;
+  --control-gap: 1.2rem;
+  --card-shadow-color: var(--shadow-color);
+  --card-border-color: var(--border-color);
+  --btn-radius: 8px;
+  --transition-fast: 200ms;
+  --transition-medium: 260ms;
+  --focus-ring: rgba(11,116,255,0.14);
+
+  /* Typography scale (can be tuned) */
+  --font-size-base: 1.18rem;       /* body / content */
+  --line-height-base: 1.9;
+  --font-size-lg: 1.08rem;         /* meta / small text */
+  --font-size-xl: 2.3rem;          /* main title */
+  --line-height-heading: 1.2;
+  --badge-font-size: 0.95rem;
+  --header-offset: 88px;           /* used for scroll-margin-top */
+}
+
+/* Reusable animation utilities */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.anim-fade-up { animation: fadeUp 0.5s ease forwards; }
+.anim-fade-up-slow { animation: fadeUp 0.72s ease forwards; }
+
+/* Page wrapper */
 .pageWrapper {
   background: var(--background-color);
   min-height: 100vh;
   padding: 32px 0;
+  transition: background var(--transition-fast), color var(--transition-fast);
 }
 
+/* Card */
 .postDetailCard {
-  background: var(--gradient-main);
-  border-radius: 18px;
-  box-shadow: 0 8px 32px var(--shadow-color);
-  padding: 2.5rem 2rem 2rem 2rem;
-  max-width: 800px;
+  background: var(--card-bg);
+  border-radius: var(--card-radius);
+  box-shadow: 0 8px 32px var(--card-shadow-color);
+  padding: var(--card-padding);
+  max-width: var(--card-max-width);
   margin: 0 auto 2rem;
   position: relative;
   overflow: hidden;
-  animation: fadeUp 0.5s ease forwards;
-  border: 2px solid var(--primary-color);
+  border: 2px solid transparent;
+  transition: background var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
 }
 
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Decorative accent */
+.postDetailCard::before{
+  content: "";
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, var(--primary-color) 0%, transparent 70%);
+  opacity: 0.10;
+  pointer-events: none;
 }
 
-.loadingWrapper {
-  margin-top: 80px;
-  text-align: center;
-}
-
+/* Loading / no post */
+.loadingWrapper,
 .noPost {
   text-align: center;
-  font-size: 1.2rem;
-  color: var(--danger-color, #e74c3c);
   margin-top: 80px;
 }
+.noPost { color: var(--danger-color); font-size: calc(var(--font-size-base) * 1.05); }
 
+/* Back button wrapper (reserve space) */
 .backButtonWrapper {
-  display: flex;
-  align-items: center;
+  position: relative;
+  width: 170px;
+  min-height: 44px;
   margin-bottom: 1.2rem;
 }
 
+/* Back button (collapsed / expanded) */
 .backCircleButton {
+  position: absolute;
+  left: 0;
+  top: 0;
   width: 44px;
   height: 44px;
   border-radius: 50%;
   background: var(--primary-color);
-  color: #fff;
+  color: var(--icon-color);
   border: none;
-  font-size: 1.5rem;
-  font-weight: bold;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 8px var(--shadow-color);
+  justify-content: flex-start;
+  padding: 0 12px;
+  box-shadow: 0 2px 8px var(--card-shadow-color);
   cursor: pointer;
-  transition: width 0.25s, background 0.2s, box-shadow 0.2s;
-  position: relative;
-  margin-right: 12px;
-  outline: none;
+  transition:
+    width var(--transition-medium) cubic-bezier(.2,.9,.3,1),
+    border-radius var(--transition-medium) cubic-bezier(.2,.9,.3,1),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast);
   overflow: hidden;
+  outline: none;
 }
-
+.backCircleButton:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 4px;
+}
 .backIcon {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.2s;
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  color: inherit;
+  transition: transform 160ms ease, color 160ms ease;
 }
-
+.backIcon svg { width: 20px; height: 20px; display: block; }
+.backIcon svg path,
+.backIcon svg line,
+.backIcon svg polyline {
+  stroke: currentColor !important;
+  stroke-width: 2.4 !important;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
 .backText {
   opacity: 0;
-  margin-left: 0;
+  transform: translateX(-6px);
   white-space: nowrap;
   font-size: 1rem;
   font-weight: 500;
-  transition: opacity 0.25s, margin-left 0.25s;
   color: #fff;
+  transition: opacity 200ms ease, transform 200ms ease;
+  pointer-events: none;
 }
-
 .backCircleButton:hover,
-.backCircleButton:focus {
+.backCircleButton:focus,
+.backCircleButton:focus-visible {
   width: 170px;
   border-radius: 24px;
   background: var(--secondary-color);
-  box-shadow: 0 4px 16px var(--shadow-color);
+  box-shadow: 0 6px 20px rgba(2,6,23,0.14);
 }
-
 .backCircleButton:hover .backText,
-.backCircleButton:focus .backText {
+.backCircleButton:focus .backText,
+.backCircleButton:focus-visible .backText {
   opacity: 1;
-  margin-left: 0px;
+  transform: translateX(0);
+  pointer-events: auto;
 }
-
 .backCircleButton:hover .backIcon,
-.backCircleButton:focus .backIcon {
+.backCircleButton:focus .backIcon,
+.backCircleButton:focus-visible .backIcon {
   color: #fff;
+  transform: translateX(0);
 }
 
+/* Responsive tweak for back button */
 @media (max-width: 600px) {
-  .backCircleButton {
-    width: 38px;
-    height: 38px;
-    font-size: 1.2rem;
-  }
+  .backButtonWrapper { width: 120px; min-height: 38px; }
+  .backCircleButton { width: 38px; height: 38px; padding: 0 10px; }
   .backCircleButton:hover,
-  .backCircleButton:focus {
-    width: 120px;
-  }
-  .backText {
-    font-size: 0.95rem;
-  }
+  .backCircleButton:focus,
+  .backCircleButton:focus-visible { width: 120px; border-radius: 20px; }
+  .backIcon svg,
+  .backIcon svg path,
+  .backIcon svg line,
+  .backIcon svg polyline { stroke-width: 1.8 !important; }
 }
 
+/* Header: avatar + title */
 .postDetailHeader {
   display: flex;
   align-items: center;
-  gap: 1.2rem;
+  gap: calc(var(--control-gap));
   margin-bottom: 1.5rem;
+  z-index: 1;
 }
 
+/* Avatar */
 .postAvatar {
-  width: 48px;
-  height: 48px;
+  width: var(--avatar-size);
+  height: var(--avatar-size);
   border-radius: 50%;
   object-fit: cover;
-  box-shadow: 0 2px 8px var(--shadow-color);
-  background: #fff;
-}
-
-.postTitle {
-  font-family: 'Montserrat', Arial, sans-serif;
-  font-size: 2.3rem;
-  font-weight: bold;
-  margin: 0;
-  color: var(--primary-color);
-  letter-spacing: 0.01em;
-  line-height: 1.3;
-  text-shadow: 0 2px 8px var(--shadow-color);
-}
-
-.postMetaInfo {
-  font-size: 1rem;
-  color: var(--text-secondary, #888);
-  margin-top: 0.5rem;
-  display: flex;
-  gap: 1.2rem;
-  align-items: center;
-}
-
-.postBadge {
-  background: var(--danger-color, #e74c3c);
-  color: #fff;
-  font-size: 0.95rem;
-  font-weight: 700;
-  border-radius: 8px;
-  padding: 2px 10px;
-  margin-left: 8px;
-  letter-spacing: 0.03em;
-  box-shadow: 0 2px 8px var(--shadow-color);
-}
-
-.postImage {
-  width: 100%;
-  max-height: 350px;
-  object-fit: cover;
-  border-radius: 12px;
-  margin: 1.2rem 0;
-  box-shadow: 0 2px 16px var(--shadow-color);
-}
-
-.postContent {
-  font-size: 1.18rem;
-  line-height: 2;
-  letter-spacing: 0.01em;
-  margin-bottom: 2.5rem;
-  color: var(--text-color);
-  font-family: Georgia, "Times New Roman", Times, serif;
-  background: rgba(255,255,255,0.02);
-  border-radius: 8px;
-  padding: 0.5rem 0.5rem;
-  animation: fadeUp 0.7s;
-}
-
-.shareButtons {
-  display: flex;
-  gap: 1rem;
-  justify-content: flex-end;
-  margin-top: 1.5rem;
-}
-
-.shareButton {
-  background: linear-gradient(90deg, var(--primary-color) 60%, var(--secondary-color) 100%);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 0.6rem 1.2rem;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 2px 8px var(--shadow-color);
-  transition: transform 0.2s, background 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.shareButton:hover {
-  background: linear-gradient(90deg, var(--secondary-color) 60%, var(--primary-color) 100%);
-  box-shadow: 0 4px 16px var(--shadow-color);
-}
-
-.twitterShare {
-  background: #1da1f2;
-}
-.facebookShare {
-  background: #1877f2;
-}
-.linkedinShare {
-  background: #0077b5;
-}
-
-.shareText {
-  font-weight: 600;
-  font-size: 1.05rem;
-}
-
-.codeBlock pre, .codeBlock code {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
-.dark-mode .codeBlock pre, 
-.dark-mode .codeBlock code {
-  background-color: rgba(255, 255, 255, 0.08);
-}
-
-
-/* Thêm Google Fonts nếu chưa có */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;400&family=Roboto:wght@400;500&display=swap');
-
-.postDetailCard {
+  box-shadow: 0 2px 8px var(--card-shadow-color);
   background: var(--card-bg);
-  border-radius: 18px;
-  box-shadow: 0 8px 32px var(--shadow-color);
-  padding: 2.5rem 2rem 2rem 2rem;
-  max-width: 800px;
-  margin: 0 auto 2rem;
-  position: relative;
+  border: var(--avatar-border) solid var(--primary-color);
   overflow: hidden;
-  animation: fadeUp 0.5s ease forwards;
+  flex-shrink: 0;
 }
+.postAvatar img,
+.postAvatar > img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-.postAvatar {
-  width: 54px;
-  height: 54px;
-  border-radius: 50%;
-  object-fit: cover;
-  box-shadow: 0 2px 8px var(--shadow-color);
-  background: var(--card-bg);
-  border: 2px solid var(--primary-color);
-}
-
+/* Title + meta */
 .postTitle {
   font-family: 'Montserrat', Arial, sans-serif;
-  font-size: 2.3rem;
-  font-weight: bold;
+  font-size: var(--font-size-xl);
+  font-weight: 700;
   margin: 0;
   color: var(--primary-color);
-  letter-spacing: 0.01em;
-  line-height: 1.3;
+  line-height: var(--line-height-heading);
+  text-shadow: 0 2px 8px var(--card-shadow-color);
 }
-
 .postMetaInfo {
-  font-size: 1.08rem;
+  font-size: var(--font-size-lg);
   color: var(--text-color);
   margin-top: 0.5rem;
   display: flex;
@@ -286,193 +227,111 @@
   font-family: 'Roboto', Arial, sans-serif;
 }
 
+/* Badge uses variable sized typography */
 .postBadge {
-  background: var(--danger-color, #e74c3c);
+  background: var(--danger-color);
   color: #fff;
-  font-size: 0.95rem;
+  font-size: var(--badge-font-size);
   font-weight: 700;
   border-radius: 8px;
-  padding: 2px 10px;
+  padding: 4px 10px;
   margin-left: 8px;
-  letter-spacing: 0.03em;
-  box-shadow: 0 2px 8px var(--shadow-color);
+  box-shadow: 0 2px 8px var(--card-shadow-color);
 }
 
+/* Post image (thumbnail) */
 .postImage {
   width: 100%;
   max-height: 350px;
   object-fit: cover;
   border-radius: 14px;
   margin: 1.2rem 0;
-  box-shadow: 0 2px 16px var(--shadow-color);
+  box-shadow: 0 2px 16px var(--card-shadow-color);
   background: var(--card-bg);
+  overflow: hidden;
 }
+.postImage img,
+.postImage > img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
+/* Content */
 .postContent {
-  font-size: 1.18rem;
-  line-height: 2;
-  letter-spacing: 0.01em;
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
   margin-bottom: 2.5rem;
   color: var(--text-color);
   font-family: 'Roboto', Arial, sans-serif;
-  background: var(--card-bg);
+  background: transparent;
   border-radius: 8px;
-  padding: 1rem 1.2rem;
-  animation: fadeUp 0.7s;
-  box-shadow: 0 2px 8px var(--shadow-color);
+  padding: 0.5rem 0;
+  box-shadow: none;
 }
 
-.postContent h2, .postContent h3 {
+/* Headings inside content: spacing + scroll offset for anchor links */
+.postContent h2,
+.postContent h3 {
   font-family: 'Montserrat', Arial, sans-serif;
   color: var(--primary-color);
-  margin-top: 2rem;
-  margin-bottom: 1rem;
+  margin-top: 1.6rem;
+  margin-bottom: 0.8rem;
+  line-height: var(--line-height-heading);
+  scroll-margin-top: calc(var(--header-offset));
 }
 
-.postContent p {
-  margin-bottom: 1.2rem;
-}
+/* Make H2 slightly larger than H3 */
+.postContent h2 { font-size: calc(var(--font-size-xl) * 0.55); }
+.postContent h3 { font-size: calc(var(--font-size-xl) * 0.42); }
 
+/* Share buttons */
 .shareButtons {
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
   margin-top: 1.5rem;
 }
-
 .shareButton {
-  background: var(--primary-color);
+  background: linear-gradient(90deg, var(--primary-color) 60%, var(--secondary-color) 100%);
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--btn-radius);
   padding: 0.6rem 1.2rem;
-  font-size: 1rem;
+  font-size: var(--font-size-lg);
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 2px 8px var(--shadow-color);
-  transition: transform 0.2s, background 0.2s;
-  display: flex;
+  box-shadow: 0 2px 8px var(--card-shadow-color);
+  transition: transform 0.2s ease, background 0.2s ease;
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
 }
+.shareButton:hover { transform: translateY(-2px) scale(1.02); }
 
-.shareButton:hover {
-  transform: translateY(-2px) scale(1.03);
-  background: var(--secondary-color);
-}
+/* Social brand overrides use global variables */
+.twitterShare { background: var(--info-color); color: #fff; }
+.facebookShare { background: var(--facebook-color); color: #fff; }
+.linkedinShare { background: var(--linkedin-color); color: #fff; }
 
-.twitterShare { background: #1da1f2; }
-.facebookShare { background: #1877f2; }
-.linkedinShare { background: #0077b5; }
-
-.shareText {
-  font-weight: 600;
-  font-size: 1.05rem;
-}
-
+/* Responsive adjustments */
 @media (max-width: 900px) {
-  .postDetailCard {
-    padding: 1rem;
-  }
-  .postImage {
-    max-height: 220px;
-  }
-  .postTitle {
-    font-size: 1.5rem;
-  }
-  .postContent {
-    font-size: 1rem;
-    padding: 0.7rem;
-  }
+  .postDetailCard { padding: 1.2rem; --card-padding: 1.2rem; }
+  .postImage { max-height: 260px; border-radius: 12px; }
+  .postTitle { font-size: 1.6rem; }
+  .postContent { font-size: 1rem; padding: 0.6rem 0; line-height: 1.7; }
+  .postDetailHeader { gap: 0.9rem; }
+  .postBadge { font-size: 0.88rem; padding: 3px 8px; }
+  .postAvatar { width: 48px; height: 48px; }
 }
 
-/* DARK MODE SUPPORT */
-body.dark-mode,
-.dark-mode .pageWrapper {
-  background: var(--background-color) !important;
+/* Mobile adjustments */
+@media (max-width: 600px) {
+  .postDetailCard { padding: 0.9rem; --card-padding: 0.9rem; }
+  .postImage { max-height: 180px; border-radius: 10px; margin-bottom: 1rem; }
+  .postTitle { font-size: 1.25rem; }
+  .postContent { font-size: 0.98rem; line-height: 1.6; }
+  .postDetailHeader { gap: 0.7rem; align-items: flex-start; }
+  .postBadge { font-size: 0.82rem; padding: 2px 8px; }
+  .postAvatar { width: 40px; height: 40px; }
+  .shareButtons { justify-content: center; flex-wrap: wrap; gap: 0.6rem; }
 }
 
-body.dark-mode .postDetailCard,
-.dark-mode .postDetailCard {
-  background: var(--card-bg) !important;
-  color: var(--text-color) !important;
-  box-shadow: 0 8px 32px var(--shadow-color);
-}
-
-body.dark-mode .postTitle,
-.dark-mode .postTitle {
-  color: var(--primary-color) !important;
-}
-
-body.dark-mode .postMetaInfo,
-.dark-mode .postMetaInfo {
-  color: var(--text-color) !important;
-}
-
-body.dark-mode .postBadge,
-.dark-mode .postBadge {
-  background: var(--danger-color, #ff5252) !important;
-  color: #fff !important;
-  box-shadow: 0 2px 8px var(--shadow-color);
-}
-
-body.dark-mode .postImage,
-.dark-mode .postImage {
-  background: var(--card-bg) !important;
-  box-shadow: 0 2px 16px var(--shadow-color);
-}
-
-body.dark-mode .postContent,
-.dark-mode .postContent {
-  background: var(--card-bg) !important;
-  color: var(--text-color) !important;
-  box-shadow: 0 2px 8px var(--shadow-color);
-}
-
-body.dark-mode .postContent h2,
-body.dark-mode .postContent h3,
-.dark-mode .postContent h2,
-.dark-mode .postContent h3 {
-  color: var(--primary-color) !important;
-}
-
-body.dark-mode .shareButton,
-.dark-mode .shareButton {
-  background: var(--primary-color) !important;
-  color: #fff !important;
-}
-
-body.dark-mode .shareButton:hover,
-.dark-mode .shareButton:hover {
-  background: var(--secondary-color) !important;
-}
-
-body.dark-mode .twitterShare { background: #1a91da !important; }
-body.dark-mode .facebookShare { background: #1565c0 !important; }
-body.dark-mode .linkedinShare { background: #005983 !important; }
-
-body.dark-mode .backCircleButton,
-.dark-mode .backCircleButton {
-  background: var(--primary-color) !important;
-  color: #fff !important;
-}
-
-body.dark-mode .backCircleButton:hover,
-body.dark-mode .backCircleButton:focus,
-.dark-mode .backCircleButton:hover,
-.dark-mode .backCircleButton:focus {
-  background: var(--secondary-color) !important;
-}
-
-body.dark-mode .noPost,
-.dark-mode .noPost {
-  color: var(--danger-color, #ff5252) !important;
-}
-
-body.dark-mode .codeBlock pre, 
-body.dark-mode .codeBlock code,
-.dark-mode .codeBlock pre, 
-.dark-mode .codeBlock code {
-  background-color: var(--card-bg) !important;
-  color: var(--text-color) !important;
-}
+/* Dark mode note: global .dark-mode should redefine the root variables.
+   This module will automatically pick up colors/shadows from those variables. */

@@ -1,0 +1,223 @@
+.profileModalOverlay {
+  position: fixed; top:0; left:0; right:0; bottom:0;
+  background: rgba(0,0,0,0.45);
+  display:flex; justify-content:center; align-items:center;
+  z-index: 9999;
+}
+
+.profileModalContent {
+  background: var(--card-bg);
+  color: var(--text-color);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px var(--shadow-color);
+  padding: 2rem;
+  min-width: 300px; max-width: 700px;
+  width: 100%;
+  max-height: 95vh;
+  overflow-y: auto;
+  animation: modalFadeIn 0.25s ease;
+}
+
+/* Modal overlay - giữ tương thích với các tên cũ (profileModalOverlay) và mới (modalOverlay) */
+.modalOverlay,
+.profileModalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 1.25rem;
+  overflow: auto;
+}
+
+/* Modal content - rộng hơn để không bị "quá nhỏ" */
+.modalContent,
+.profileModalContent {
+  background: var(--card-bg);
+  color: var(--text-color);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 720px;    /* tăng max-width cho modal lớn hơn */
+  min-width: 320px;
+  max-height: 92vh;
+  overflow-y: auto;
+  position: relative;
+  animation: modalFadeIn 260ms cubic-bezier(.2,.9,.3,1);
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--border-color);
+}
+
+/* Close button (compatible) */
+.modalClose,
+.profileModalClose {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  color: var(--primary-color);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+}
+.modalClose:hover,
+.profileModalClose:hover { color: var(--secondary-color); transform: scale(1.05); }
+.modalClose:focus-visible,
+.profileModalClose:focus-visible {
+  outline: 3px solid rgba(0,123,255,0.18);
+  outline-offset: 2px;
+}
+
+/* animation */
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Form & layout inside modal */
+.formGroup,
+.profileFormGroup {
+  margin-bottom: 1rem;
+}
+.formLabel {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-weight: 600;
+}
+.formControl,
+.profileFormControl {
+  width: 100%;
+  padding: 0.85rem;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: var(--input-bg);
+  color: var(--text-color);
+  font-size: 0.98rem;
+  transition: box-shadow .18s ease, border-color .12s ease;
+}
+textarea.formControl,
+textarea.profileFormControl {
+  min-height: 140px;
+  resize: vertical;
+}
+
+/* File upload & preview */
+.fileUpload {
+  display: inline-block;
+  padding: 0.5rem 0.75rem;
+  border: 1px dashed var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  background: transparent;
+  transition: border-color .12s ease, background .12s ease, transform .12s ease;
+}
+.fileUpload:hover,
+.fileUpload:focus-visible { border-color: var(--primary-color); transform: translateY(-2px); }
+.filePreview,
+.profileAvatar {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+  margin-top: 0.5rem;
+  box-shadow: var(--shadow);
+  transition: opacity .2s ease, transform .18s ease;
+  opacity: 1;
+}
+
+/* Buttons inside modal (consistent with admin.module.css) */
+.submitButton,
+.profileSubmitButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  transition: transform .16s ease, box-shadow .16s ease, opacity .12s ease;
+  width: 100%;
+}
+.submitButton:hover,
+.profileSubmitButton:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(0,0,0,0.14); }
+.submitButton:disabled,
+.profileSubmitButton:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+/* Inline error / message */
+.profileErrorMessage,
+.formError {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  background: rgba(244,67,54,0.08);
+  color: var(--danger-color);
+}
+
+/* Spinner helpers */
+.spinnerOverlay { display:flex; align-items:center; justify-content:center; padding:1rem; }
+.spinner { width:44px; height:44px; border:5px solid rgba(0,0,0,0.08); border-top-color:var(--primary-color); border-radius:50%; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Confirm modal actions */
+.confirmActions { display:flex; gap:0.6rem; justify-content:flex-end; margin-top:0.75rem; flex-wrap:wrap; }
+.confirmActions .submitButton { width:auto; padding:0.5rem 0.9rem; }
+
+/* Accessibility focus outlines */
+.formControl:focus-visible,
+.profileFormControl:focus-visible,
+.modalClose:focus-visible,
+.profileModalClose:focus-visible,
+.submitButton:focus-visible,
+.profileSubmitButton:focus-visible {
+  outline: 3px solid rgba(0,123,255,0.14);
+  outline-offset: 2px;
+}
+
+/* Responsive tweaks for mobile */
+@media (max-width: 768px) {
+  .modalContent,
+  .profileModalContent {
+    max-width: 98vw;
+    padding: 1rem;
+    border-radius: 12px;
+  }
+  .filePreview,
+  .profileAvatar { width:76px; height:76px; }
+  .submitButton,
+  .profileSubmitButton { width:100%; }
+  .formControl, .profileFormControl { font-size: 0.95rem; padding:0.75rem; }
+}
+
+/* Backward-compatible small helpers that admin.module.css might expect */
+.profileModalHeader { display:flex; align-items:center; justify-content:center; position:relative; margin-bottom:0.6rem; }
+.profileModalTitle { font-size:1.25rem; font-weight:700; text-align:center; }
+
+@keyframes modalFadeIn { from { opacity:0; transform: translateY(-30px); } to { opacity:1; transform: translateY(0); } }
+
+.profileModalHeader { display:flex; align-items:center; justify-content:center; position:relative; margin-bottom:0.5rem; }
+.profileModalTitle { flex:1; text-align:center; font-size:1.5rem; font-weight:bold; }
+.profileModalClose { position:absolute; top:0; right:0; border:none; background:none; font-size:2rem; color:var(--primary-color); cursor:pointer; }
+.profileModalClose:hover { color: var(--secondary-color); }
+
+.profileFormGroup { margin-bottom: 1rem; }
+.profileFormControl { width:100%; padding:0.7rem; border-radius:4px; border:1px solid var(--border-color); background: var(--card-bg); color: var(--text-color); }
+textarea.profileFormControl { min-height: 80px; resize: vertical; }
+
+.profileSubmitButton { width:100%; padding:0.7rem 1.5rem; border:none; border-radius:999px; font-size:1rem; font-weight:500; background: var(--primary-color); color:#fff; cursor:pointer; box-shadow:0 2px 8px var(--shadow-color); margin-top:8px; transition: all 0.2s ease; }
+.profileSubmitButton:hover { background: var(--secondary-color); box-shadow:0 4px 16px var(--shadow-color); }
+
+.spinnerOverlay { display:flex; align-items:center; justify-content:center; padding:2rem; }
+.spinner { width:50px; height:50px; border:5px solid #ccc; border-top-color:var(--primary-color); border-radius:50%; animation: spin 1s linear infinite; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }

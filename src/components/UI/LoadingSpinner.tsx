@@ -1,9 +1,9 @@
 import React from 'react';
-import styles from '../../styles/main.module.css';
+import styles from '../../styles/admin.module.css';
 
 const LoadingSpinner: React.FC = () => (
-  <div className={styles.loadingSpinnerWrapper}>
-    <div className={styles.loadingSpinner}></div>
+  <div className={styles.spinnerOverlay}>
+    <div className={styles.spinner}></div>
   </div>
 );
 

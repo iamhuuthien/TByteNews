@@ -436,3 +436,51 @@ body.dark-mode .statCard {
   background: var(--card-bg);
   color: var(--text-color);
 }
+
+/* Compatibility button classes used by components */
+.primaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.56rem 1rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  box-shadow: 0 8px 24px var(--shadow-color);
+  transition: transform .14s ease, box-shadow .14s ease;
+}
+.primaryButton:hover { transform: translateY(-3px); }
+
+.secondaryButton {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.4rem;
+  padding:.5rem .9rem;
+  border-radius:999px;
+  border:1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-color);
+  font-weight:700;
+  cursor:pointer;
+}
+.secondaryButton:hover { background: rgba(0,0,0,0.04); transform: translateY(-1px); }
+
+.dangerButton {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.4rem;
+  padding:.5rem .9rem;
+  border-radius:999px;
+  border:none;
+  background: var(--danger-color);
+  color: #fff;
+  font-weight:700;
+  cursor:pointer;
+}
+.dangerButton:hover { filter: brightness(.95); transform: translateY(-1px); }

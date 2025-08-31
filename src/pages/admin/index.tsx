@@ -1,26 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import supabase from '../../utils/supabaseClient';
-import styles from '../../styles/admin.module.css';
 import Head from 'next/head';
+import styles from '../../styles/admin.module.css';
 import AddPostModal from '../../components/Admin/AddPostModal';
 import EditPostModal from '../../components/Admin/EditPostModal';
 import AdminProfileModal from '../../components/Admin/AdminProfileModal';
-import LoadingSpinner from 'components/UI/LoadingSpinner';
+import LoadingSpinner from '../../components/UI/LoadingSpinner';
+import ConfirmModal from 'components/UI/ConfirmModal';
 
 const AdminPage: React.FC = () => {
   const router = useRouter();
+
+  // State chung
   const [posts, setPosts] = useState<any[]>([]);
-  const [editingPostId, setEditingPostId] = useState<string | null>(null);
-  const [editData, setEditData] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [message, setMessage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+
+  // Modal state
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [editData, setEditData] = useState<any>(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState<{ id: string; title: string } | null>(null);
 
-  // Thống kê
   const totalViews = posts.reduce((sum, post) => sum + (post.views || 0), 0);
 
   useEffect(() => {
@@ -34,250 +38,151 @@ const AdminPage: React.FC = () => {
       }
     };
     checkUser();
-    // eslint-disable-next-line
-  }, []);
+  }, [router]);
 
   const fetchPosts = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('posts')
-        .select('*')
-        .order('created_at', { ascending: false });
-
+      const { data, error } = await supabase.from('posts').select('*').order('created_at', { ascending: false });
       if (error) throw error;
       setPosts(data || []);
-    } catch (error) {
-      setMessage('Lỗi tải bài viết!');
+    } catch {
+      setMessage({ type: 'error', text: 'Lỗi tải bài viết!' });
     } finally {
       setLoading(false);
     }
   };
 
-  // Thêm bài viết mới
-  const handleAddPost = async ({ title, content, thumbnail, thumbnailFile }: any) => {
+  const handleAddPost = async (newPost: any) => {
     setLoading(true);
-    let thumbnailUrl = thumbnail;
     try {
-      if (thumbnailFile) {
-        const fileExt = thumbnailFile.name.split('.').pop();
-        const fileName = `${Date.now()}.${fileExt}`;
-        const { error } = await supabase.storage
-          .from('thumbnails')
-          .upload(fileName, thumbnailFile);
-        if (!error) {
-          const { data: urlData } = supabase.storage
-            .from('thumbnails')
-            .getPublicUrl(fileName);
-          thumbnailUrl = urlData.publicUrl;
-        }
-      }
-      await supabase
-        .from('posts')
-        .insert([{ title, content, thumbnail: thumbnailUrl, views: 0 }]);
-      setMessage('Tạo bài viết mới thành công!');
+      await uploadAndInsertPost(newPost);
+      setMessage({ type: 'success', text: 'Tạo bài viết mới thành công!' });
       fetchPosts();
     } catch (error: any) {
-      setMessage('Có lỗi khi lưu bài viết: ' + (error.message || ''));
-    }
-    setLoading(false);
-    setShowAddModal(false);
-  };
-
-  // Sửa bài viết
-  const handleEdit = (post: any) => {
-    setEditingPostId(post.id);
-    setEditData(post);
-    setShowEditModal(true);
-    setMessage(null);
-  };
-
-  // Cập nhật bài viết
-  const handleUpdatePost = async ({ title, content, thumbnail, thumbnailFile }: any) => {
-    setLoading(true);
-    let thumbnailUrl = thumbnail;
-    try {
-      if (thumbnailFile) {
-        const fileExt = thumbnailFile.name.split('.').pop();
-        const fileName = `${Date.now()}.${fileExt}`;
-        const { error } = await supabase.storage
-          .from('thumbnails')
-          .upload(fileName, thumbnailFile);
-        if (!error) {
-          const { data: urlData } = supabase.storage
-            .from('thumbnails')
-            .getPublicUrl(fileName);
-          thumbnailUrl = urlData.publicUrl;
-        }
-      }
-      await supabase
-        .from('posts')
-        .update({ title, content, thumbnail: thumbnailUrl, updated_at: new Date().toISOString() })
-        .eq('id', editingPostId);
-      setMessage('Cập nhật bài viết thành công!');
-      fetchPosts();
-    } catch (error: any) {
-      setMessage('Có lỗi khi cập nhật: ' + (error.message || ''));
-    }
-    setLoading(false);
-    setEditingPostId(null);
-    setEditData(null);
-    setShowEditModal(false);
-  };
-
-  const handleDelete = async (id: string) => {
-    if (confirm('Bạn chắc chắn muốn xóa bài viết này?')) {
-      setLoading(true);
-      try {
-        await supabase.from('posts').delete().eq('id', id);
-        setMessage('Xóa bài viết thành công!');
-        fetchPosts();
-      } catch (error) {
-        setMessage('Có lỗi khi xóa bài viết!');
-      }
+      setMessage({ type: 'error', text: error.message || 'Có lỗi khi tạo bài viết' });
+    } finally {
+      setShowAddModal(false);
       setLoading(false);
     }
   };
 
-  const handleCloseAddModal = () => {
-    setShowAddModal(false);
-    setMessage(null);
+  const handleEditPost = (post: any) => {
+    setEditData(post);
+    setShowEditModal(true);
   };
 
-  const handleCloseEditModal = () => {
-    setShowEditModal(false);
-    setEditingPostId(null);
-    setEditData(null);
-    setMessage(null);
+  const handleUpdatePost = async (updatedPost: any) => {
+    setLoading(true);
+    try {
+      await uploadAndUpdatePost(editData.id, updatedPost);
+      setMessage({ type: 'success', text: 'Cập nhật bài viết thành công!' });
+      fetchPosts();
+    } catch (error: any) {
+      setMessage({ type: 'error', text: error.message || 'Có lỗi khi cập nhật' });
+    } finally {
+      setShowEditModal(false);
+      setEditData(null);
+      setLoading(false);
+    }
   };
 
-  const handleCloseProfileModal = () => {
-    setShowProfileModal(false);
-    setMessage(null);
+  const handleDelete = async () => {
+    if (!confirmDelete) return;
+    setLoading(true);
+    try {
+      await supabase.from('posts').delete().eq('id', confirmDelete.id);
+      setMessage({ type: 'success', text: 'Xóa bài viết thành công!' });
+      fetchPosts();
+    } catch {
+      setMessage({ type: 'error', text: 'Có lỗi khi xóa bài viết!' });
+    } finally {
+      setConfirmDelete(null);
+      setLoading(false);
+    }
+  };
+
+  const uploadAndInsertPost = async ({ title, content, thumbnailFile }: any) => {
+    let thumbnailUrl = '';
+    if (thumbnailFile) {
+      const fileExt = thumbnailFile.name.split('.').pop();
+      const fileName = `${Date.now()}.${fileExt}`;
+      const { error } = await supabase.storage.from('thumbnails').upload(fileName, thumbnailFile);
+      if (error) throw error;
+      const { data: urlData } = supabase.storage.from('thumbnails').getPublicUrl(fileName);
+      thumbnailUrl = urlData.publicUrl;
+    }
+    await supabase.from('posts').insert([{ title, content, thumbnail: thumbnailUrl, views: 0 }]);
+  };
+
+  const uploadAndUpdatePost = async (id: string, { title, content, thumbnailFile }: any) => {
+    let thumbnailUrl = editData.thumbnail || '';
+    if (thumbnailFile) {
+      const fileExt = thumbnailFile.name.split('.').pop();
+      const fileName = `${Date.now()}.${fileExt}`;
+      const { error } = await supabase.storage.from('thumbnails').upload(fileName, thumbnailFile);
+      if (error) throw error;
+      const { data: urlData } = supabase.storage.from('thumbnails').getPublicUrl(fileName);
+      thumbnailUrl = urlData.publicUrl;
+    }
+    await supabase.from('posts').update({ title, content, thumbnail: thumbnailUrl, updated_at: new Date().toISOString() }).eq('id', id);
   };
 
   if (!user) return null;
 
   return (
     <>
-      <Head>
-        <title>Admin Panel - TByteNews</title>
-      </Head>
+      <Head><title>Admin Panel - TByteNews</title></Head>
       <div className={styles.adminContainer}>
         <div className={styles.adminHeader}>
           <h1>Admin Dashboard</h1>
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-            <button
-              className={styles.submitButton}
-              onClick={() => setShowAddModal(true)}
-            >
-              ✍️ Tạo bài viết mới
-            </button>
-            <button
-              className={styles.submitButton}
-              style={{ background: '#ff9800', color: '#fff' }}
-              onClick={() => setShowProfileModal(true)}
-            >
-              👤 Thay đổi thông tin admin
-            </button>
-            <button
-              className={styles.signOutButton}
-              onClick={async () => {
-                await supabase.auth.signOut();
-                router.replace('/admin/login');
-              }}
-            >
-              Đăng xuất
-            </button>
+          <div className={styles.headerButtons}>
+            <button className={styles.primaryButton} onClick={() => setShowAddModal(true)}>✍️ Tạo bài viết</button>
+            <button className={styles.secondaryButton} onClick={() => setShowProfileModal(true)}>👤 Thông tin admin</button>
+            <button className={styles.dangerButton} onClick={async () => {await supabase.auth.signOut(); router.replace('/admin/login')}}>Đăng xuất</button>
           </div>
         </div>
+
+        {/* Stats */}
         <div className={styles.statsSection}>
-          <div className={styles.statCard}>
-            <h3>Tổng bài viết</h3>
-            <p>{posts.length}</p>
-          </div>
-          <div className={styles.statCard}>
-            <h3>Tổng lượt xem</h3>
-            <p>{totalViews}</p>
-          </div>
+          <div className={styles.statCard}><h3>Tổng bài viết</h3><p>{posts.length}</p></div>
+          <div className={styles.statCard}><h3>Tổng lượt xem</h3><p>{totalViews}</p></div>
         </div>
-        {/* Modal thêm bài viết */}
-        <AddPostModal
-          visible={showAddModal}
-          onClose={handleCloseAddModal}
-          onSubmit={handleAddPost}
-          loading={loading}
-        />
-        {/* Modal sửa bài viết */}
-        <EditPostModal
-          visible={showEditModal}
-          onClose={handleCloseEditModal}
-          onSubmit={handleUpdatePost}
-          loading={loading}
-          editData={editData}
-        />
-        {/* Modal chỉnh sửa thông tin admin */}
-        <AdminProfileModal
-          visible={showProfileModal}
-          onClose={handleCloseProfileModal}
-        />
-        {/* Thông báo */}
-        {message && (
-          <p className={styles.errorMessage} style={{ background: message.includes('thành công') ? '#e8f5e9' : undefined, color: message.includes('thành công') ? '#388e3c' : undefined }}>
-            {message}
-          </p>
-        )}
-        {/* Danh sách bài viết dạng block đẹp mắt */}
+
+        {/* Message */}
+        {message && <p className={`${styles.toastMessage} ${message.type === 'success' ? styles.success : styles.error}`}>{message.text}</p>}
+
+        {/* Posts */}
         <div className={styles.postsList}>
-          <h2 style={{ marginBottom: 18 }}>Danh sách bài viết</h2>
-          {loading ? (
-            <LoadingSpinner />
-          ) : posts.length > 0 ? (
+          {loading ? <LoadingSpinner /> :
+            posts.length === 0 ? <p>Chưa có bài viết nào. Hãy tạo bài viết đầu tiên!</p> :
             <div className={styles.postsGridAdmin}>
-              {posts.map((post) => (
+              {posts.map(post => (
                 <div key={post.id} className={styles.postBlock}>
-                  {post.thumbnail && (
-                    <img
-                      src={post.thumbnail}
-                      alt={post.title}
-                      className={styles.postThumbnail}
-                      onError={e => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = "https://via.placeholder.com/120x80";
-                      }}
-                    />
-                  )}
+                  <img src={post.thumbnail || '/placeholder.png'} alt={post.title} className={styles.postThumbnail} />
                   <div className={styles.postInfo}>
-                    <h3 className={styles.postTitle}>{post.title}</h3>
-                    <p className={styles.postSummary}>
-                      {post.content.replace(/<[^>]*>?/gm, '').substring(0, 120)}...
-                    </p>
+                    <h3>{post.title}</h3>
+                    <p>{post.content.replace(/<[^>]*>?/gm, '').substring(0,120)}...</p>
                     <div className={styles.postMeta}>
-                      <span>👁️ {post.views || 0} lượt xem</span>
+                      <span>👁️ {post.views || 0}</span>
                       <span>🗓️ {new Date(post.created_at).toLocaleDateString()}</span>
                     </div>
                   </div>
                   <div className={styles.postActions}>
-                    <button
-                      onClick={() => handleEdit(post)}
-                      className={styles.editButton}
-                    >
-                      ✏️ Sửa
-                    </button>
-                    <button
-                      onClick={() => handleDelete(post.id)}
-                      className={styles.deleteButton}
-                    >
-                      🗑️ Xóa
-                    </button>
+                    <button onClick={() => handleEditPost(post)} className={styles.editButton}>✏️ Sửa</button>
+                    <button onClick={() => setConfirmDelete({ id: post.id, title: post.title })} className={styles.deleteButton}>🗑️ Xóa</button>
                   </div>
                 </div>
               ))}
             </div>
-          ) : (
-            <p>Chưa có bài viết nào. Hãy tạo bài viết đầu tiên!</p>
-          )}
+          }
         </div>
+
+        {/* Modals */}
+        <AddPostModal visible={showAddModal} onClose={() => setShowAddModal(false)} onSubmit={handleAddPost} loading={loading} />
+        {editData && <EditPostModal visible={showEditModal} onClose={() => setShowEditModal(false)} onSubmit={handleUpdatePost} loading={loading} editData={editData} />}
+        <AdminProfileModal visible={showProfileModal} onClose={() => setShowProfileModal(false)} />
+        {confirmDelete && <ConfirmModal visible={!!confirmDelete} title={`Xóa bài viết "${confirmDelete.title}"?`} onConfirm={handleDelete} onCancel={() => setConfirmDelete(null)} />}
       </div>
     </>
   );
