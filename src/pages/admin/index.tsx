@@ -5,6 +5,7 @@ import styles from '../../styles/admin.module.css';
 import Head from 'next/head';
 import AddPostModal from '../../components/Admin/AddPostModal';
 import EditPostModal from '../../components/Admin/EditPostModal';
+import AdminProfileModal from '../../components/Admin/AdminProfileModal';
 import LoadingSpinner from 'components/UI/LoadingSpinner';
 
 const AdminPage: React.FC = () => {
@@ -17,6 +18,7 @@ const AdminPage: React.FC = () => {
   const [message, setMessage] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
 
   // Thống kê
   const totalViews = posts.reduce((sum, post) => sum + (post.views || 0), 0);
@@ -149,6 +151,11 @@ const AdminPage: React.FC = () => {
     setMessage(null);
   };
 
+  const handleCloseProfileModal = () => {
+    setShowProfileModal(false);
+    setMessage(null);
+  };
+
   if (!user) return null;
 
   return (
@@ -165,6 +172,13 @@ const AdminPage: React.FC = () => {
               onClick={() => setShowAddModal(true)}
             >
               ✍️ Tạo bài viết mới
+            </button>
+            <button
+              className={styles.submitButton}
+              style={{ background: '#ff9800', color: '#fff' }}
+              onClick={() => setShowProfileModal(true)}
+            >
+              👤 Thay đổi thông tin admin
             </button>
             <button
               className={styles.signOutButton}
@@ -201,6 +215,11 @@ const AdminPage: React.FC = () => {
           onSubmit={handleUpdatePost}
           loading={loading}
           editData={editData}
+        />
+        {/* Modal chỉnh sửa thông tin admin */}
+        <AdminProfileModal
+          visible={showProfileModal}
+          onClose={handleCloseProfileModal}
         />
         {/* Thông báo */}
         {message && (

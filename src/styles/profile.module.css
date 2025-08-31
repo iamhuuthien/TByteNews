@@ -1,0 +1,164 @@
+.profileModalOverlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profileModalContent {
+  background: var(--card-bg);
+  color: var(--text-color);
+  border-radius: 18px;
+  box-shadow: 0 8px 32px var(--shadow-color);
+  padding: 2.5rem 2rem 2rem 2rem;
+  min-width: 340px;
+  max-width: 700px;
+  width: 100%;
+  max-height: 95vh;
+  position: relative;
+  animation: modalFadeIn 0.25s;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  overflow-y: auto;
+}
+
+@keyframes modalFadeIn {
+  from { transform: translateY(-30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.profileModalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 0.5rem;
+}
+
+.profileModalTitle {
+  flex: 1;
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin: 0;
+  padding: 0.5rem 0;
+}
+
+.profileModalClose {
+  position: absolute;
+  top: 0.2rem;
+  right: 0.2rem;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: var(--primary-color);
+  cursor: pointer;
+  transition: color 0.2s;
+  z-index: 10;
+  line-height: 1;
+}
+
+.profileModalClose:hover {
+  color: var(--secondary-color);
+}
+
+.profileAvatarWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.profileAvatar {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--highlight-bg);
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px var(--shadow-color);
+  border: 2px solid var(--primary-color);
+}
+
+.profileFormGroup {
+  margin-bottom: 1rem;
+}
+
+.profileFormGroup label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-weight: bold;
+}
+
+.profileFormControl, textarea.profileFormControl {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  width: 100%;
+  padding: 0.7rem;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+textarea.profileFormControl {
+  resize: vertical;
+  min-height: 90px;
+}
+
+.profileSubmitButton {
+  background: linear-gradient(90deg, var(--primary-color) 60%, var(--secondary-color) 100%);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.7rem 1.6rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px var(--shadow-color);
+  margin: 0 auto;
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+}
+
+
+.profileSubmitButton:hover, .profileSubmitButton:focus {
+  background: linear-gradient(90deg, var(--secondary-color) 60%, var(--primary-color) 100%);
+  box-shadow: 0 4px 16px var(--shadow-color);
+}
+
+.profileErrorMessage {
+  background-color: var(--danger-color, #ffebee);
+  color: var(--danger-color, #c62828);
+  padding: 0.7rem;
+  border-radius: 4px;
+  margin-top: 1rem;
+  text-align: center;
+  font-weight: bold;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 700px) {
+  .profileModalContent {
+    min-width: 0;
+    width: 98vw;
+    padding: 1rem 0.5rem;
+    border-radius: 10px;
+    max-width: 99vw;
+  }
+}
+
+body.dark-mode .profileModalContent {
+  background: var(--card-bg);
+  color: var(--text-color);
+}
+
+body.dark-mode .profileAvatar {
+  background: var(--card-bg);
+  border: 2px solid var(--primary-color);
+}

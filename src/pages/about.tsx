@@ -1,9 +1,21 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '../styles/main.module.css';
 import Head from 'next/head';
 import Link from 'next/link';
+import { getAdminProfile } from '../utils/fetchAdminProfile';
+import LoadingSpinner from '../components/UI/LoadingSpinner';
 
 const AboutPage = () => {
+  const [profile, setProfile] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getAdminProfile()
+      .then(data => setProfile(data))
+      .catch(() => setProfile(null))
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <>
       <Head>
@@ -11,56 +23,71 @@ const AboutPage = () => {
         <meta name="description" content="Information about the author of TByteNews" />
       </Head>
       <div className={styles.container}>
-        <nav className={styles.nav}>
+        <nav>
           <Link href="/">
             <span className={styles.navLink}>← Back to Home</span>
           </Link>
         </nav>
         <div className={styles.aboutSection}>
           <h1 className={styles.aboutTitle}>About Me</h1>
-          <div className={styles.profileSection}>
-            <div className={styles.profileHeader}>
-              <img
-                src="/profile-image.jpg"
-                alt="Profile"
-                className={styles.profileImage}
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = "https://via.placeholder.com/150";
-                }}
-              />
-              <div>
-                <h2 className={styles.profileName}>Your Name</h2>
-                <h3 className={styles.profileTitle}>Software Engineer</h3>
+          {loading ? (
+            <LoadingSpinner />
+          ) : profile ? (
+            <div className={styles.profileSection}>
+              <div className={styles.profileHeader}>
+                <img
+                  src={profile.avatar_url || '/profile-image.jpg'}
+                  alt="Profile"
+                  className={styles.profileImage}
+                  style={{ width: 120, height: 120, borderRadius: '50%', objectFit: 'cover', background: '#eee', marginRight: 24 }}
+                  onError={e => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = "https://via.placeholder.com/120";
+                  }}
+                />
+                <div>
+                  <h2 className={styles.profileName}>{profile.name}</h2>
+                  <h3 className={styles.profileTitle}>{profile.job_title}</h3>
+                </div>
+              </div>
+              {profile.bio && (
+                <div className={styles.profileBio}>
+                  <p>{profile.bio}</p>
+                </div>
+              )}
+              <div className={styles.contactInfo}>
+                <h3>Contact & Social Media</h3>
+                <ul className={styles.socialList}>
+                  <li>
+                    <strong>Email:</strong>{' '}
+                    {profile.email ? (
+                      <a href={`mailto:${profile.email}`}>{profile.email}</a>
+                    ) : 'Chưa cập nhật'}
+                  </li>
+                  <li>
+                    <strong>GitHub:</strong>{' '}
+                    {profile.github ? (
+                      <a href={profile.github} target="_blank" rel="noopener noreferrer">{profile.github}</a>
+                    ) : 'Chưa cập nhật'}
+                  </li>
+                  <li>
+                    <strong>LinkedIn:</strong>{' '}
+                    {profile.linkedin ? (
+                      <a href={profile.linkedin} target="_blank" rel="noopener noreferrer">{profile.linkedin}</a>
+                    ) : 'Chưa cập nhật'}
+                  </li>
+                  <li>
+                    <strong>YouTube:</strong>{' '}
+                    {profile.youtube ? (
+                      <a href={profile.youtube} target="_blank" rel="noopener noreferrer">{profile.youtube}</a>
+                    ) : 'Chưa cập nhật'}
+                  </li>
+                </ul>
               </div>
             </div>
-            <div className={styles.profileBio}>
-              <p>
-                Hello, I'm a Software Engineer with a passion for web development and creating helpful digital experiences.
-                I specialize in building modern web applications using React, Next.js, and various backend technologies.
-              </p>
-              <p>
-                When I'm not coding, you can find me reading tech blogs, exploring new technologies, or creating content for my YouTube channel.
-              </p>
-            </div>
-            <div className={styles.contactInfo}>
-              <h3>Contact & Social Media</h3>
-              <ul className={styles.socialList}>
-                <li>
-                  <strong>Email:</strong> <a href="mailto:your.email@example.com">your.email@example.com</a>
-                </li>
-                <li>
-                  <strong>GitHub:</strong> <a href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer">github.com/yourusername</a>
-                </li>
-                <li>
-                  <strong>LinkedIn:</strong> <a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener noreferrer">linkedin.com/in/yourusername</a>
-                </li>
-                <li>
-                  <strong>YouTube (Chicky Tales):</strong> <a href="https://youtube.com/c/chickytales" target="_blank" rel="noopener noreferrer">youtube.com/c/chickytales</a>
-                </li>
-              </ul>
-            </div>
-          </div>
+          ) : (
+            <div className={styles.loading}>Không tìm thấy thông tin admin.</div>
+          )}
         </div>
       </div>
     </>

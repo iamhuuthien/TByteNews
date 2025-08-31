@@ -1,22 +1,49 @@
-:root {
-  --background-color: #f9f9f9;
-  --text-color: #333;
-  --card-bg: #ffffff;
-  --border-color: #ddd;
-  --shadow-color: rgba(0, 0, 0, 0.1);
-  --primary-color: #0070f3;
-  --secondary-color: #4CAF50;
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;400&family=Roboto:wght@400;500&display=swap');
+
+body {
+  font-family: 'Roboto', Arial, sans-serif;
 }
 
-/* Dark mode variables */
+:root {
+  --background-color: #f9f9f9;
+  --text-color: #222;
+  --card-bg: #fff;
+  --border-color: #e0e0e0;
+  --shadow-color: rgba(0, 0, 0, 0.10);
+  --primary-color: #0070f3;
+  --secondary-color: #4CAF50;
+  --danger-color: #e74c3c;
+  --info-color: #1da1f2;
+  --facebook-color: #4267B2;
+  --linkedin-color: #0077b5;
+  --muted-color: #888;
+  --highlight-bg: #f5f7fa;
+  --highlight-bg2: #c3cfe2;
+  --success-color: #43a047;
+  --warning-color: #ffb300;
+  --gradient-main: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  --gradient-dark: linear-gradient(135deg, #23272f 0%, #181a20 100%);
+}
+
 .dark-mode {
-  --background-color: #181818;
-  --text-color: #f5f5f5;
-  --card-bg: #232323;
+  --background-color: #181a20;
+  --text-color: #e3eafc;
+  --card-bg: #23272f;
   --border-color: #444;
-  --shadow-color: rgba(0, 0, 0, 0.5);
-  --primary-color: #3a8eff;
+  --shadow-color: rgba(0,0,0,0.32);
+  --primary-color: #90caf9;
   --secondary-color: #5cbb60;
+  --danger-color: #ff5252;
+  --info-color: #1a91da;
+  --facebook-color: #1565c0;
+  --linkedin-color: #005983;
+  --muted-color: #b0b8c1;
+  --highlight-bg: #23272f;
+  --highlight-bg2: #181a20;
+  --success-color: #43a047;
+  --warning-color: #ffb300;
+  --gradient-main: linear-gradient(135deg, #23272f 0%, #181a20 100%);
+  --gradient-dark: linear-gradient(135deg, #23272f 0%, #23272f 100%);
 }
 
 * {

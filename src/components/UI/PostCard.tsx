@@ -19,6 +19,7 @@ const PostCard: React.FC<PostCardProps> = ({
   views,
   created_at
 }) => {
+  // Xử lý tóm tắt: strip HTML, lấy 150 ký tự đầu
   const summary = content.replace(/<[^>]*>?/gm, '').substring(0, 150) + '...';
 
   return (
@@ -35,13 +36,18 @@ const PostCard: React.FC<PostCardProps> = ({
             }}
           />
         )}
-        <h2 className={styles.postTitle}>{title}</h2>
+        <h2 className={styles.postTitle}>
+          <span className={styles.postTitleIcon}>📰</span>
+          {title}
+        </h2>
         <p className={styles.postSummary}>{summary}</p>
         <div className={styles.postMeta}>
           <span className={styles.postDate}>
-            {new Date(created_at).toLocaleDateString()}
+            <span role="img" aria-label="calendar">🗓️</span> {new Date(created_at).toLocaleDateString()}
           </span>
-          <span className={styles.postViews}>{views || 0} views</span>
+          <span className={styles.postViews}>
+            <span role="img" aria-label="views">👁️</span> {views || 0} lượt xem
+          </span>
         </div>
       </div>
     </Link>

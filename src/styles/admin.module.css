@@ -116,8 +116,8 @@ textarea.formControl {
 }
 
 .submitButton {
-  background-color: #298dff;
-  color: white;
+  background: linear-gradient(90deg, var(--primary-color) 60%, var(--secondary-color) 100%);
+  color: #fff;
   border: none;
   border-radius: 999px;
   padding: 0.6rem 1.6rem;
@@ -133,7 +133,7 @@ textarea.formControl {
 }
 
 .submitButton:hover, .submitButton:focus {
-  background-color: #1769aa;
+  background: linear-gradient(90deg, var(--secondary-color) 60%, var(--primary-color) 100%);
   box-shadow: 0 4px 16px var(--shadow-color);
 }
 
@@ -225,11 +225,13 @@ textarea.formControl {
 }
 
 .errorMessage {
-  background-color: #ffebee;
-  color: #c62828;
+  background-color: var(--danger-color, #ffebee);
+  color: var(--danger-color, #c62828);
   padding: 0.7rem;
   border-radius: 4px;
   margin-bottom: 1rem;
+  font-weight: bold;
+  letter-spacing: 0.02em;
 }
 
 .loginButton {
@@ -418,4 +420,19 @@ textarea.formControl {
     margin-left: 0;
     margin-top: 0.7rem;
   }
+}
+
+body.dark-mode .adminContainer {
+  background: var(--background-color);
+  color: var(--text-color);
+}
+
+body.dark-mode .postForm {
+  background: var(--card-bg);
+  color: var(--text-color);
+}
+
+body.dark-mode .statCard {
+  background: var(--card-bg);
+  color: var(--text-color);
 }
