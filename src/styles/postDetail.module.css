@@ -266,6 +266,50 @@
   box-shadow: none;
 }
 
+/* Make images and embedded media responsive inside post content */
+.postContent img,
+.postContent video,
+.postContent iframe,
+.postContent embed,
+.postContent object {
+  max-width: 100%;
+  height: auto !important;
+  display: block;
+  margin: 0.6rem 0;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* If the editor inserted wide figures/iframes wrap them */
+.postContent figure,
+.postContent .media-wrap {
+  max-width: 100%;
+  overflow: hidden;
+  display: block;
+}
+
+/* limit very tall images to avoid layout break (keeps aspect) */
+.postContent img[width] {
+  max-height: 70vh;
+  width: auto;
+}
+
+/* code blocks and preformatted content should scroll horizontally instead of breaking layout */
+.postContent pre {
+  overflow: auto;
+  max-width: 100%;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+/* ensure tables are responsive */
+.postContent table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: auto;
+  display: block;
+}
+
 /* Headings inside content: spacing + scroll offset for anchor links */
 .postContent h2,
 .postContent h3 {

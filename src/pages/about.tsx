@@ -24,7 +24,7 @@ const AboutPage = () => {
       </Head>
       <div className={styles.container}>
         <nav>
-          <Link href="/">
+          <Link href="/" legacyBehavior>
             <span className={styles.navLink}>← Back to Home</span>
           </Link>
         </nav>

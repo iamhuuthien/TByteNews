@@ -7,26 +7,63 @@ body {
   font-family: 'Roboto', Arial, sans-serif;
 }
 
-:root {
-  --background-color: #f9f9f9;
-  --text-color: #222;
+:root{
+  --primary-color: #0b78ff;        /* brand */
+  --primary-strong: #075be0;
+  --secondary-color: #34d399;
+  --gradient-strong: linear-gradient(90deg, #0b78ff 0%, #34d399 100%);
+  --text-color: #111827;
+  --muted-color: #6b7280;
   --card-bg: #fff;
-  --border-color: #e0e0e0;
-  --shadow-color: rgba(0, 0, 0, 0.10);
-  --primary-color: #0070f3;
-  --secondary-color: #4CAF50;
-  --danger-color: #e74c3c;
-  --info-color: #1da1f2;
-  --facebook-color: #4267B2;
-  --linkedin-color: #0077b5;
-  --muted-color: #888;
-  --highlight-bg: #f5f7fa;
-  --highlight-bg2: #c3cfe2;
-  --success-color: #43a047;
-  --warning-color: #ffb300;
-  --gradient-main: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  --gradient-dark: linear-gradient(135deg, #23272f 0%, #181a20 100%);
-  --icon-color: #ffffff;
+  --background-color: #f9f9f9;
+}
+
+/* ensure nav text visible on light background */
+html:not(.dark) .navLink, html:not(.dark) .logo {
+  color: #0b78ff;
+}
+
+/* button primary helper (global fallback) */
+.btn-primary {
+  background: var(--gradient-strong);
+  color: #fff;
+  border: none;
+  box-shadow: 0 10px 28px rgba(11,120,255,0.10);
+  border-radius: 999px;
+  padding: 0.5rem 1rem;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 16px 40px rgba(11,120,255,0.12); }
+
+/* keep both html.dark and body.dark-mode for compatibility */
+html.dark, body.dark, body.dark-mode {
+  --primary-color: #60a5fa;
+  --gradient-strong: linear-gradient(90deg,#1e293b,#0ea5b5);
+  --text-color: #e6eef8;
+  --muted-color: #9aa6b2;
+  --card-bg: #0f1720;
+  --background-color: #0b0f14;
+}
+
+/* page base */
+html, body {
+  background: var(--background-color);
+  color: var(--text-color);
+  transition: background .22s ease, color .22s ease;
+}
+
+/* ensure root-level containers follow variables */
+.container, .pageWrapper, .layout, .main {
+  background: transparent;
+}
+
+/* make card backgrounds use var so components update automatically */
+.card, .postCard, .postDetailCard, .loginCard, .modalContent {
+  background: var(--card-bg);
+  color: var(--text-color);
+  border-color: var(--border-color);
+  box-shadow: 0 8px 28px var(--shadow-color);
+  transition: background .22s ease, color .22s ease, box-shadow .22s ease;
 }
 
 /* ===== Soft / Modern Buttons - global overrides =====
@@ -240,7 +277,6 @@ button[aria-disabled="true"] {
   .loginButton { padding: 0.65rem 1rem; border-radius: 10px; }
 }
 
-/* Responsive design */
 @media (max-width: 768px) {
   h1 {
     font-size: 2rem;
@@ -467,210 +503,12 @@ button[aria-disabled="true"] {
 @media (max-width: 500px) {
   .container {
     padding: 0.3rem;
-  }
-}
-
-/* Post detail card */
-.postDetailCard {
-  background: var(--card-bg);
-  border-radius: 16px;
-  box-shadow: 0 4px 32px var(--shadow-color);
-  padding: 2rem;
-  margin: 0 auto 2rem;
-  max-width: 800px;
-  position: relative;
-  overflow: hidden;
-  transition: background 0.3s, color 0.3s;
-}
-
-@media (max-width: 900px) {
-  .postDetailCard {
-    padding: 1rem;
-  }
-}
-
-.postDetailCard::before {
-  content: "";
-  position: absolute;
-  top: -60px;
-  right: -60px;
-  width: 180px;
-  height: 180px;
-  background: radial-gradient(circle, var(--primary-color) 0%, transparent 70%);
-  opacity: 0.12;
-  z-index: 0;
-}
-
-.postDetailHeader {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.2rem;
-}
-
-.postAvatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  object-fit: cover;
-  background: #eee;
-  border: 2px solid var(--primary-color);
-  box-shadow: 0 2px 8px var(--shadow-color);
-}
-
-.postTitle {
-  font-size: 2rem;
-  font-weight: bold;
-  margin: 0;
-  color: var(--primary-color);
-}
-
-.postMetaInfo {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  margin-bottom: 1rem;
-  font-size: 1rem;
-  color: var(--text-color);
-}
-
-.postBadge {
-  background: var(--primary-color);
-  color: #fff;
-  border-radius: 12px;
-  padding: 2px 12px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  margin-left: 8px;
-}
-
-.postImage {
-  width: 100%;
-  max-height: 350px;
-  object-fit: cover;
-  border-radius: 12px;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 2px 16px var(--shadow-color);
-}
-
-.postContent {
-  font-size: 1.1rem;
-  line-height: 1.85;
-  color: var(--text-color);
-  margin-bottom: 2rem;
-  z-index: 1;
-  position: relative;
-}
-
-.shareButtons {
-  display: flex;
-  gap: 0.7rem;
-  margin-top: 1.2rem;
-  justify-content: flex-end;
-}
-
-.shareButton {
-  padding: 0.7rem 1.2rem;
-  border-radius: 6px;
-  border: none;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
-  box-shadow: 0 2px 8px var(--shadow-color);
-}
-
-.twitterShare { background: #1da1f2; color: #fff; }
-.facebookShare { background: #4267B2; color: #fff; }
-.linkedinShare { background: #0077b5; color: #fff; }
-
-.shareButton:hover {
-  opacity: 0.85;
-  box-shadow: 0 4px 16px var(--shadow-color);
-}
-
-.backButton {
-  margin-bottom: 1.2rem;
-  background: var(--primary-color);
-  color: #fff;
-  border-radius: 6px;
-  padding: 0.5rem 1.2rem;
-  border: none;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: background 0.3s;
-}
-
-.backButton:hover {
-  background: var(--secondary-color);
-}
-
-.backCircleButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  overflow: visible;
-  transition: width 200ms cubic-bezier(.2,.9,.3,1), border-radius 180ms ease, background 160ms ease, box-shadow 160ms ease;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  background: linear-gradient(90deg, var(--primary-color) 0%, rgba(11,116,255,0.92) 80%);
-  color: #fff;
-}
-
-.backIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.2s;
-}
-
-.backText {
-  opacity: 0;
-  margin-left: 0;
-  white-space: nowrap;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: opacity 0.25s, margin-left 0.25s;
-  color: #fff;
-}
-
-.backCircleButton:hover,
-.backCircleButton:focus {
-  width: 170px;
-  border-radius: 24px;
-  background: var(--secondary-color);
-  box-shadow: 0 4px 16px var(--shadow-color);
-}
-
-.backCircleButton:hover .backText,
-.backCircleButton:focus .backText {
-  opacity: 1;
-  margin-left: 0px;
-}
-
-.backCircleButton:hover .backIcon,
-.backCircleButton:focus .backIcon {
-  color: #fff;
-}
-
-@media (max-width: 600px) {
-  .backCircleButton {
-    width: 38px;
-    height: 38px;
-    font-size: 1.2rem;
-  }
-  .backCircleButton:hover,
-  .backCircleButton:focus {
-    width: 120px;
-  }
-  .backText {
-    font-size: 0.95rem;
   }
 }
 
 /* Dark mode compatibility:
-   giữ cả hai selector để tương thích tạm thời với code cũ */
-body.dark, body.dark-mode {
+   giữ cả html.dark và body.dark-mode để Tailwind + CSS cũ đều hoạt động */
+html.dark, body.dark, body.dark-mode {
   --background-color: #0b0f14;
   --text-color: #dfe7f3;
   --card-bg: #15171b;
@@ -681,5 +519,56 @@ body.dark, body.dark-mode {
   --muted-color: #9aa6b2;
   --gradient-main: linear-gradient(135deg, #0f1724 0%, #0b1220 100%);
 }
-/* For compatibility with existing CSS modules that still use body.dark-mode,
-   the above includes body.dark-mode via the comma (body.dark, body.dark-mode) */
+
+/* Mystical animated page background (subtle, efficient) */
+html::before,
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(800px 400px at 10% 20%, rgba(96,165,250,0.06), transparent 12%),
+    radial-gradient(600px 300px at 85% 70%, rgba(52,211,153,0.04), transparent 12%),
+    radial-gradient(1200px 600px at 50% 10%, rgba(14,165,233,0.02), transparent 18%);
+  mix-blend-mode: screen;
+  opacity: 1;
+  animation: subtleShift 12s linear infinite;
+}
+
+/* faint particle/stars layer */
+html::after,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 30px 30px;
+  opacity: 0.35;
+  filter: blur(1px);
+  pointer-events: none;
+  transform: translateZ(0);
+}
+
+/* subtle motion */
+@keyframes subtleShift {
+  0% { transform: translateY(0) scale(1); opacity: 0.98; }
+  50% { transform: translateY(-6px) scale(1.02); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 0.98; }
+}
+
+/* make sure background respects dark / light variables */
+html.dark::before, body.dark-mode::before {
+  mix-blend-mode: overlay;
+  filter: hue-rotate(-10deg) saturate(105%);
+  opacity: 0.9;
+}
+html.dark::after, body.dark-mode::after { opacity: 0.25; }
+
+/* ensure main containers keep contrast with mystical background */
+.container, .pageWrapper, .layout, .main {
+  position: relative;
+  z-index: 0;
+}

@@ -25,7 +25,7 @@ const PostCard: React.FC<PostCardProps> = ({
   const summary = content.replace(/<[^>]*>?/gm, '').substring(0, 150) + '...';
 
   return (
-    <Link href={`/posts/${id}`}>
+    <Link href={`/posts/${id}`} legacyBehavior>
       <div className={styles.postCard}>
         {thumbnail && (
           <img
