@@ -1,6 +1,0 @@
-# Install Lucide React icons
-npm install lucide-react
-
-# Install Tailwind CSS (if you haven't already)
-npm install -D tailwindcss postcss autoprefixer
-npx tailwindcss init -p
