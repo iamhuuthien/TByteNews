@@ -1,8 +1,8 @@
 import React from 'react';
-import type { ComponentType, SVGProps } from 'react';
+import { LucideIcon } from 'lucide-react';
 
 interface IconProps {
-  icon: ComponentType<SVGProps<SVGSVGElement>>;
+  icon: LucideIcon;
   className?: string;
   size?: number | string;
   strokeWidth?: number | string;
