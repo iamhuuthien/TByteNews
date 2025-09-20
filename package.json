@@ -12,18 +12,18 @@
     "@shadcn/ui": "^0.0.4",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.56.0",
+    "@vercel/speed-insights": "^1.2.0",
+    "formidable": "^3.5.4",
     "isomorphic-dompurify": "^2.26.0",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
     "react-quill": "^2.0.0",
-    "tailwindcss": "^4.1.12",
-    "formidable": "^3.6.0"
+    "tailwindcss": "^4.1.12"
   },
   "devDependencies": {
     "@types/node": "latest",
     "@types/react": "latest",
-    "@types/formidable": "latest",
     "typescript": "latest"
   },
   "keywords": [],
