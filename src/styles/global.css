@@ -1,4 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;400&family=Roboto:wght@400;500&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 body {
   font-family: 'Roboto', Arial, sans-serif;
@@ -26,98 +29,215 @@ body {
   --icon-color: #ffffff;
 }
 
-.dark-mode {
-  --background-color: #181a20;
-  --text-color: #e3eafc;
-  --card-bg: #23272f;
-  --border-color: #444;
-  --shadow-color: rgba(0,0,0,0.32);
-  --primary-color: #90caf9;
-  --secondary-color: #5cbb60;
-  --danger-color: #ff5252;
-  --info-color: #1a91da;
-  --facebook-color: #1565c0;
-  --linkedin-color: #005983;
-  --muted-color: #b0b8c1;
-  --highlight-bg: #23272f;
-  --highlight-bg2: #181a20;
-  --success-color: #43a047;
-  --warning-color: #ffb300;
-  --gradient-main: linear-gradient(135deg, #23272f 0%, #181a20 100%);
-  --gradient-dark: linear-gradient(135deg, #23272f 0%, #23272f 100%);
-  --icon-color: #e6eef8;
+/* ===== Soft / Modern Buttons - global overrides =====
+   These rules apply a consistent, soft look across existing button classes:
+   - Use .btn base styles, then variant classes for primary/secondary/danger.
+   - Existing project classes are mapped to these variants for backward compat.
+*/
+:root {
+  --btn-padding-y: 0.55rem;
+  --btn-padding-x: 1rem;
+  --btn-radius: 999px; /* pill */
+  --btn-gap: 0.6rem;
+  --btn-shadow-subtle: 0 6px 20px rgba(2,6,23,0.06);
+  --btn-shadow-hover: 0 12px 30px rgba(2,6,23,0.08);
+  --btn-transition: 180ms cubic-bezier(.2,.9,.3,1);
 }
 
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  background-color: var(--background-color);
-  color: var(--text-color);
-  transition: background-color 0.3s, color 0.3s;
-}
-
-a {
-  color: var(--primary-color);
-  text-decoration: none;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  margin-top: 0;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-button {
-  cursor: pointer;
-}
-
-/* Code block styling */
-pre, code {
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  font-family: 'Courier New', Courier, monospace;
-}
-
-code {
-  padding: 2px 5px;
-}
-
-pre {
-  padding: 10px;
-  overflow-x: auto;
-}
-
-pre code {
+/* Base button */
+button,
+button[type="button"],
+button[type="submit"],
+.input-button,
+.primaryButton,
+.secondaryButton,
+.dangerButton,
+.submitButton,
+.profileSubmitButton,
+.loginButton,
+.signOutButton,
+.modalClose,
+.backCircleButton,
+.fileUpload {
+  -webkit-font-smoothing: antialiased;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--btn-gap);
+  padding: var(--btn-padding-y) var(--btn-padding-x);
+  border-radius: var(--btn-radius);
   border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform var(--btn-transition), box-shadow var(--btn-transition), opacity var(--btn-transition), background var(--btn-transition);
+  box-shadow: var(--btn-shadow-subtle);
+  user-select: none;
+  line-height: 1;
+}
+
+/* Focus accessibility */
+button:focus-visible,
+.primaryButton:focus-visible,
+.submitButton:focus-visible,
+.loginButton:focus-visible,
+.profileSubmitButton:focus-visible,
+.modalClose:focus-visible {
+  outline: 3px solid rgba(11,116,255,0.12);
+  outline-offset: 3px;
+}
+
+/* icon-only circular buttons */
+.icon-btn,
+.backCircleButton {
+  width: 44px;
+  height: 44px;
   padding: 0;
+  justify-content: center;
+  border-radius: 50%;
+  box-shadow: var(--btn-shadow-subtle);
 }
 
-/* Utility classes */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
+/* On hover make buttons lift slightly */
+button:hover,
+.primaryButton:hover,
+.submitButton:hover,
+.loginButton:hover,
+.profileSubmitButton:hover,
+.secondaryButton:hover,
+.dangerButton:hover,
+.signOutButton:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--btn-shadow-hover);
+  opacity: 0.98;
 }
 
-.text-center {
-  text-align: center;
+/* PRIMARY variant */
+.btn--primary,
+.primaryButton,
+.submitButton,
+.profileSubmitButton {
+  color: #fff;
+  background: linear-gradient(90deg, var(--primary-color) 0%, rgba(11,116,255,0.92) 60%, var(--secondary-color) 100%);
+  box-shadow: 0 8px 26px rgba(11,116,255,0.08);
 }
 
-/* Form elements */
-input, textarea, select, button {
-  font-family: inherit;
-  font-size: inherit;
+/* SECONDARY variant */
+.btn--secondary,
+.secondaryButton,
+.cancelButton {
+  color: #0b2c3b;
+  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.82));
+  border: 1px solid rgba(16,24,32,0.04);
+  color: var(--text-color);
+  box-shadow: 0 6px 18px rgba(2,6,23,0.04);
+}
+
+/* DANGER variant */
+.btn--danger,
+.dangerButton,
+.signOutButton {
+  color: #fff;
+  background: linear-gradient(90deg, #ff6b6b 0%, #ff4d4d 100%);
+  box-shadow: 0 10px 24px rgba(255,77,77,0.08);
+}
+
+/* small/circle icon inside buttons */
+button .icon,
+.icon-btn > svg,
+.backCircleButton > svg,
+.modalClose > svg {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  color: inherit;
+}
+
+/* ensure file upload label looks like a soft button */
+.fileUpload {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0.5rem 0.9rem;
+  border-radius: 12px;
+  border: 1px dashed rgba(0,0,0,0.06);
+  background: rgba(255,255,255,0.02);
+}
+
+/* Back circle button: expand to pill on hover (keeps icon centered when collapsed) */
+.backCircleButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  transition: width 200ms cubic-bezier(.2,.9,.3,1), border-radius 180ms ease, background 160ms ease, box-shadow 160ms ease;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: linear-gradient(90deg, var(--primary-color) 0%, rgba(11,116,255,0.92) 80%);
+  color: #fff;
+}
+
+/* expand on hover/focus so full text visible */
+.backCircleButton:hover,
+.backCircleButton:focus,
+.backCircleButton:focus-visible {
+  width: 210px;
+  padding: 0 14px;
+  border-radius: 999px;
+  justify-content: flex-start;
+}
+
+/* Modal close: small circular button */
+.modalClose {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.03);
+  color: var(--primary-color);
+  box-shadow: none;
+}
+
+/* Login button / big CTA */
+.loginButton {
   width: 100%;
-  box-sizing: border-box;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background: linear-gradient(90deg, var(--primary-color) 0%, rgba(11,116,255,0.9) 100%);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 8px 28px rgba(11,116,255,0.06);
+}
+
+/* Small utility: ghost button */
+.btn--ghost {
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.06);
+  color: var(--text-color);
+  box-shadow: none;
+}
+
+/* Ensure disabled styles clear */
+button[disabled],
+button[aria-disabled="true"] {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Responsive - slightly smaller touch targets on mobile */
+@media (max-width: 600px) {
+  :root {
+    --btn-padding-y: 0.45rem;
+    --btn-padding-x: 0.8rem;
+  }
+  .backCircleButton:hover,
+  .backCircleButton:focus { width: 140px; }
+  .loginButton { padding: 0.65rem 1rem; border-radius: 10px; }
 }
 
 /* Responsive design */
@@ -271,24 +391,16 @@ input, textarea, select, button {
 }
 
 .backCircleButton {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--primary-color);
-  color: #fff;
-  border: none;
-  font-size: 1.5rem;
-  font-weight: bold;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px var(--shadow-color);
-  cursor: pointer;
-  transition: width 0.25s, background 0.2s, box-shadow 0.2s;
-  position: relative;
-  margin-right: 12px;
-  outline: none;
-  overflow: hidden;
+  overflow: visible;
+  transition: width 200ms cubic-bezier(.2,.9,.3,1), border-radius 180ms ease, background 160ms ease, box-shadow 160ms ease;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: linear-gradient(90deg, var(--primary-color) 0%, rgba(11,116,255,0.92) 80%);
+  color: #fff;
 }
 
 .backIcon {
@@ -341,3 +453,233 @@ input, textarea, select, button {
     font-size: 0.95rem;
   }
 }
+
+/* Responsive design */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem;
+  }
+  .container {
+    padding: 0.5rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .container {
+    padding: 0.3rem;
+  }
+}
+
+/* Post detail card */
+.postDetailCard {
+  background: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: 0 4px 32px var(--shadow-color);
+  padding: 2rem;
+  margin: 0 auto 2rem;
+  max-width: 800px;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s, color 0.3s;
+}
+
+@media (max-width: 900px) {
+  .postDetailCard {
+    padding: 1rem;
+  }
+}
+
+.postDetailCard::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, var(--primary-color) 0%, transparent 70%);
+  opacity: 0.12;
+  z-index: 0;
+}
+
+.postDetailHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+}
+
+.postAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #eee;
+  border: 2px solid var(--primary-color);
+  box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.postTitle {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0;
+  color: var(--primary-color);
+}
+
+.postMetaInfo {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  color: var(--text-color);
+}
+
+.postBadge {
+  background: var(--primary-color);
+  color: #fff;
+  border-radius: 12px;
+  padding: 2px 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+.postImage {
+  width: 100%;
+  max-height: 350px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 16px var(--shadow-color);
+}
+
+.postContent {
+  font-size: 1.1rem;
+  line-height: 1.85;
+  color: var(--text-color);
+  margin-bottom: 2rem;
+  z-index: 1;
+  position: relative;
+}
+
+.shareButtons {
+  display: flex;
+  gap: 0.7rem;
+  margin-top: 1.2rem;
+  justify-content: flex-end;
+}
+
+.shareButton {
+  padding: 0.7rem 1.2rem;
+  border-radius: 6px;
+  border: none;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.twitterShare { background: #1da1f2; color: #fff; }
+.facebookShare { background: #4267B2; color: #fff; }
+.linkedinShare { background: #0077b5; color: #fff; }
+
+.shareButton:hover {
+  opacity: 0.85;
+  box-shadow: 0 4px 16px var(--shadow-color);
+}
+
+.backButton {
+  margin-bottom: 1.2rem;
+  background: var(--primary-color);
+  color: #fff;
+  border-radius: 6px;
+  padding: 0.5rem 1.2rem;
+  border: none;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background 0.3s;
+}
+
+.backButton:hover {
+  background: var(--secondary-color);
+}
+
+.backCircleButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  transition: width 200ms cubic-bezier(.2,.9,.3,1), border-radius 180ms ease, background 160ms ease, box-shadow 160ms ease;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: linear-gradient(90deg, var(--primary-color) 0%, rgba(11,116,255,0.92) 80%);
+  color: #fff;
+}
+
+.backIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.backText {
+  opacity: 0;
+  margin-left: 0;
+  white-space: nowrap;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: opacity 0.25s, margin-left 0.25s;
+  color: #fff;
+}
+
+.backCircleButton:hover,
+.backCircleButton:focus {
+  width: 170px;
+  border-radius: 24px;
+  background: var(--secondary-color);
+  box-shadow: 0 4px 16px var(--shadow-color);
+}
+
+.backCircleButton:hover .backText,
+.backCircleButton:focus .backText {
+  opacity: 1;
+  margin-left: 0px;
+}
+
+.backCircleButton:hover .backIcon,
+.backCircleButton:focus .backIcon {
+  color: #fff;
+}
+
+@media (max-width: 600px) {
+  .backCircleButton {
+    width: 38px;
+    height: 38px;
+    font-size: 1.2rem;
+  }
+  .backCircleButton:hover,
+  .backCircleButton:focus {
+    width: 120px;
+  }
+  .backText {
+    font-size: 0.95rem;
+  }
+}
+
+/* Dark mode compatibility:
+   giữ cả hai selector để tương thích tạm thời với code cũ */
+body.dark, body.dark-mode {
+  --background-color: #0b0f14;
+  --text-color: #dfe7f3;
+  --card-bg: #15171b;
+  --border-color: rgba(255,255,255,0.04);
+  --shadow-color: rgba(0,0,0,0.6);
+  --primary-color: #60a5fa;
+  --secondary-color: #34d399;
+  --muted-color: #9aa6b2;
+  --gradient-main: linear-gradient(135deg, #0f1724 0%, #0b1220 100%);
+}
+/* For compatibility with existing CSS modules that still use body.dark-mode,
+   the above includes body.dark-mode via the comma (body.dark, body.dark-mode) */

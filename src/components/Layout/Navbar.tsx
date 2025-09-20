@@ -11,13 +11,13 @@ const Navbar = () => {
     const savedTheme = typeof window !== 'undefined' ? localStorage.getItem('theme') : null;
     const isDark = savedTheme === 'dark';
     setIsDarkMode(isDark);
-    document.documentElement.classList.toggle('dark-mode', isDark);
+    document.documentElement.classList.toggle('dark', isDark);
   }, []);
 
   const toggleTheme = () => {
     const newIsDark = !isDarkMode;
     setIsDarkMode(newIsDark);
-    document.documentElement.classList.toggle('dark-mode', newIsDark);
+    document.documentElement.classList.toggle('dark', newIsDark);
     try {
       localStorage.setItem('theme', newIsDark ? 'dark' : 'light');
     } catch (e) {

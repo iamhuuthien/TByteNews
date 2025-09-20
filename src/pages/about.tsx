@@ -3,7 +3,7 @@ import styles from '../styles/main.module.css';
 import Head from 'next/head';
 import Link from 'next/link';
 import { getAdminProfile } from '../utils/fetchAdminProfile';
-import LoadingSpinner from '../components/UI/LoadingSpinner';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
 
 const AboutPage = () => {
   const [profile, setProfile] = useState<any>(null);

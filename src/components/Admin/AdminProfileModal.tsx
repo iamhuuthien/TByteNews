@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import supabase from '../../utils/supabaseClient';
 import { getAdminProfile, updateAdminProfile } from '../../utils/fetchAdminProfile';
-import LoadingSpinner from '../UI/LoadingSpinner';
+import LoadingSpinner from '../ui/LoadingSpinner';
 import styles from '../../styles/adminModal.module.css';
 
 const initialProfile = {

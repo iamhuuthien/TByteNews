@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import supabase from '../../utils/supabaseClient';
 import Head from 'next/head';
-import LoadingSpinner from '../../components/UI/LoadingSpinner';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import styles from '../../styles/postDetail.module.css';
 import * as createDOMPurifyModule from 'isomorphic-dompurify';
+import Icon from '../../components/ui/Icon';
+import { ArrowLeft, Calendar, Eye, Share2 } from 'lucide-react';
 
 const createDOMPurify = (createDOMPurifyModule as any).default ?? createDOMPurifyModule;
 const DOMPurify = createDOMPurify(globalThis as any);
@@ -116,11 +118,7 @@ const PostDetailPage: React.FC = () => {
               title="Quay về trang trước"
               aria-label="Quay về trang trước"
             >
-              <span className={styles.backIcon}>
-                <svg width="20" height="20" viewBox="0 0 22 22" fill="none" aria-hidden="true">
-                  <path d="M14 5L8 11L14 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </span>
+              <span className={styles.backIcon}><Icon icon={ArrowLeft} size={18} /></span>
               <span className={styles.backText}>Quay về</span>
             </button>
           </div>
@@ -135,11 +133,8 @@ const PostDetailPage: React.FC = () => {
             <div>
               <h1 className={styles.postTitle}>{post.title}</h1>
               <div className={styles.postMetaInfo}>
-                <span>{new Date(post.created_at).toLocaleDateString()}</span>
-                <span>
-                  {post.views ?? 0} lượt xem
-                  <span className={styles.postBadge}>Hot</span>
-                </span>
+                <span><Icon icon={Calendar} size={14} /> {new Date(post.created_at).toLocaleDateString()}</span>
+                <span><Icon icon={Eye} size={14} /> {post.views || 0} lượt xem</span>
               </div>
             </div>
           </div>
@@ -169,7 +164,7 @@ const PostDetailPage: React.FC = () => {
               className={`${styles.shareButton} ${styles.twitterShare}`}
               aria-label="Chia sẻ Twitter"
             >
-              <span className={styles.shareText}>Chia sẻ Twitter</span>
+              <Icon icon={Share2} size={16} /> <span className={styles.shareText}>Chia sẻ</span>
             </button>
 
             <button

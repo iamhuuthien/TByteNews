@@ -6,8 +6,10 @@ import styles from '../../styles/admin.module.css';
 import AddPostModal from '../../components/Admin/AddPostModal';
 import EditPostModal from '../../components/Admin/EditPostModal';
 import AdminProfileModal from '../../components/Admin/AdminProfileModal';
-import LoadingSpinner from '../../components/UI/LoadingSpinner';
-import ConfirmModal from 'components/UI/ConfirmModal';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
+import ConfirmModal from 'components/ui/ConfirmModal';
+import Icon from '../../components/ui/Icon';
+import { PlusSquare, User, LogOut, Edit2, Trash2, BarChart2, Eye } from 'lucide-react';
 
 const AdminPage: React.FC = () => {
   const router = useRouter();
@@ -137,9 +139,9 @@ const AdminPage: React.FC = () => {
         <div className={styles.adminHeader}>
           <h1>Admin Dashboard</h1>
           <div className={styles.headerButtons}>
-            <button className={styles.primaryButton} onClick={() => setShowAddModal(true)}>✍️ Tạo bài viết</button>
-            <button className={styles.secondaryButton} onClick={() => setShowProfileModal(true)}>👤 Thông tin admin</button>
-            <button className={styles.dangerButton} onClick={async () => {await supabase.auth.signOut(); router.replace('/admin/login')}}>Đăng xuất</button>
+            <button className={styles.primaryButton} onClick={() => setShowAddModal(true)}><Icon icon={PlusSquare} size={16} /> Tạo bài viết</button>
+            <button className={styles.secondaryButton} onClick={() => setShowProfileModal(true)}><Icon icon={User} size={16} /> Thông tin admin</button>
+            <button className={styles.dangerButton} onClick={async () => {await supabase.auth.signOut(); router.replace('/admin/login')}}><Icon icon={LogOut} size={16} /> Đăng xuất</button>
           </div>
         </div>
 
@@ -159,18 +161,33 @@ const AdminPage: React.FC = () => {
             <div className={styles.postsGridAdmin}>
               {posts.map(post => (
                 <div key={post.id} className={styles.postBlock}>
-                  <img src={post.thumbnail || '/placeholder.png'} alt={post.title} className={styles.postThumbnail} />
-                  <div className={styles.postInfo}>
-                    <h3>{post.title}</h3>
-                    <p>{post.content.replace(/<[^>]*>?/gm, '').substring(0,120)}...</p>
+                  <div className={styles.postThumbnail}>
+                    <img
+                      src={post.thumbnail || '/profile-image.jpg'}
+                      alt={post.title}
+                      onError={(e) => { const t = e.target as HTMLImageElement; t.src = '/profile-image.jpg'; }}
+                      style={{ width: 96, height: 64, objectFit: 'cover', borderRadius: 8 }}
+                    />
+                  </div>
+
+                  <div className={styles.postInfo} style={{ flex: '1 1 auto' }}>
+                    <h3 className={styles.postTitle}>{post.title}</h3>
+                    <p className={styles.postSummary} dangerouslySetInnerHTML={{ __html: (post.content || '').replace(/<[^>]*>?/gm, '').slice(0, 220) + '...' }} />
                     <div className={styles.postMeta}>
-                      <span>👁️ {post.views || 0}</span>
-                      <span>🗓️ {new Date(post.created_at).toLocaleDateString()}</span>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                        <Icon icon={Eye} size={14} /> {post.views || 0} lượt xem
+                      </span>
+                      <span style={{ marginLeft: 12, color: 'var(--muted-color)' }}>{new Date(post.created_at).toLocaleDateString()}</span>
                     </div>
                   </div>
-                  <div className={styles.postActions}>
-                    <button onClick={() => handleEditPost(post)} className={styles.editButton}>✏️ Sửa</button>
-                    <button onClick={() => setConfirmDelete({ id: post.id, title: post.title })} className={styles.deleteButton}>🗑️ Xóa</button>
+
+                  <div className={styles.postActions} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                    <button className={styles.editButton} onClick={() => handleEditPost(post)} aria-label={`Sửa ${post.title}`}>
+                      <Icon icon={Edit2} size={14} /> <span style={{ marginLeft: 6 }}>Sửa</span>
+                    </button>
+                    <button className={styles.deleteButton} onClick={() => setConfirmDelete({ id: post.id, title: post.title })} aria-label={`Xóa ${post.title}`}>
+                      <Icon icon={Trash2} size={14} /> <span style={{ marginLeft: 6 }}>Xóa</span>
+                    </button>
                   </div>
                 </div>
               ))}

@@ -1,6 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
 import styles from '../../styles/main.module.css';
+import Icon from './Icon';
+import { Newspaper, Eye, Calendar } from 'lucide-react';
 
 interface PostCardProps {
   id: string;
@@ -37,16 +39,18 @@ const PostCard: React.FC<PostCardProps> = ({
           />
         )}
         <h2 className={styles.postTitle}>
-          <span className={styles.postTitleIcon}>📰</span>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+            <Icon icon={Newspaper} className="text-current" size={18} />
+          </span>
           {title}
         </h2>
         <p className={styles.postSummary}>{summary}</p>
         <div className={styles.postMeta}>
           <span className={styles.postDate}>
-            <span role="img" aria-label="calendar">🗓️</span> {new Date(created_at).toLocaleDateString()}
+            <Icon icon={Calendar} className="text-current" size={14} /> {new Date(created_at).toLocaleDateString()}
           </span>
           <span className={styles.postViews}>
-            <span role="img" aria-label="views">👁️</span> {views || 0} lượt xem
+            <Icon icon={Eye} className="text-current" size={14} /> {views || 0} lượt xem
           </span>
         </div>
       </div>

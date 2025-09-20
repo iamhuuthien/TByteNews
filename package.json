@@ -13,15 +13,20 @@
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.56.0",
     "@vercel/speed-insights": "^1.2.0",
+    "autoprefixer": "^10.4.21",
     "formidable": "^3.5.4",
     "isomorphic-dompurify": "^2.26.0",
+    "lucide-react": "^0.544.0",
     "next": "latest",
+    "postcss": "^8.5.6",
     "react": "latest",
     "react-dom": "latest",
     "react-quill": "^2.0.0",
-    "tailwindcss": "^4.1.12"
+    "shadcn-ui": "^0.9.5",
+    "tailwindcss": "^4.1.13"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.13",
     "@types/node": "latest",
     "@types/react": "latest",
     "typescript": "latest"
