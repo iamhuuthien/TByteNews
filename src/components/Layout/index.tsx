@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import ScrollToTopButton from '../ui/ScrollToTopButton';
 import styles from '../../styles/layout.module.css';
 
 interface LayoutProps {
@@ -19,6 +20,7 @@ const Layout: React.FC<LayoutProps> = ({
       {!hideNavbar && <Navbar />}
       <main className={styles.main}>{children}</main>
       {!hideFooter && <Footer />}
+      <ScrollToTopButton />
     </div>
   );
 };
