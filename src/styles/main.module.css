@@ -86,6 +86,7 @@
   margin: 0.5rem 1rem;
   display: -webkit-box;
   -webkit-line-clamp: 2; /* Giới hạn tối đa 2 dòng */
+  line-clamp: 2; /* Standard property for compatibility */
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -100,6 +101,7 @@
   line-height: 1.5;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3; /* Standard property for compatibility */
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;

@@ -1,5 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from '../../styles/adminModal.module.css';
+import RichTextEditor from '../Editor/RichTextEditor';
+import * as createDOMPurifyModule from 'isomorphic-dompurify';
+const createDOMPurify = (createDOMPurifyModule as any).default ?? createDOMPurifyModule;
+const DOMPurify = createDOMPurify(globalThis as any);
 
 interface AddPostModalProps {
   visible: boolean;
@@ -24,17 +28,16 @@ const AddPostModal: React.FC<AddPostModalProps> = ({ visible, onClose, onSubmit,
   const titleRef = useRef<HTMLInputElement | null>(null);
   const prevActiveEl = useRef<Element | null>(null);
 
-  // preserve/restore focus when modal opens/closes
   useEffect(() => {
     if (visible) {
       prevActiveEl.current = document.activeElement;
       setTimeout(() => titleRef.current?.focus(), 40);
     } else {
       (prevActiveEl.current as HTMLElement | null)?.focus?.();
+      setTitle(''); setContent(''); setThumbnail(''); setThumbnailFile(null); setPreview(null); setErrors({});
     }
   }, [visible]);
 
-  // preview selected file
   useEffect(() => {
     if (thumbnailFile) {
       const url = URL.createObjectURL(thumbnailFile);
@@ -48,7 +51,8 @@ const AddPostModal: React.FC<AddPostModalProps> = ({ visible, onClose, onSubmit,
   const validate = () => {
     const e: typeof errors = {};
     if (!title.trim()) e.title = 'Tiêu đề bắt buộc';
-    if (!content.trim()) e.content = 'Nội dung bắt buộc';
+    const plain = content.replace(/<[^>]*>?/gm, '').trim();
+    if (!plain) e.content = 'Nội dung bắt buộc';
     if (thumbnail && !/^https?:\/\/.+/.test(thumbnail)) e.thumbnail = 'URL không hợp lệ';
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -57,13 +61,16 @@ const AddPostModal: React.FC<AddPostModalProps> = ({ visible, onClose, onSubmit,
   const handleSubmit = async (ev: React.FormEvent) => {
     ev.preventDefault();
     if (!validate()) return;
-    await onSubmit({ title, content, thumbnail, thumbnailFile });
-    // reset fields (preserve modal close behavior from original logic)
-    setTitle('');
-    setContent('');
-    setThumbnail('');
-    setThumbnailFile(null);
-    setPreview(null);
+    // sanitize HTML: allow basic formatting, links, images
+    const clean = DOMPurify.sanitize(content, {
+      ALLOWED_TAGS: [
+        'a','b','i','u','strong','em','p','br','ul','ol','li','h1','h2','h3','img','figure','figcaption','blockquote'
+      ],
+      ALLOWED_ATTR: ['href','target','rel','src','alt','title','class','style'],
+    });
+    await onSubmit({ title, content: clean, thumbnail, thumbnailFile });
+    // reset and close
+    setTitle(''); setContent(''); setThumbnail(''); setThumbnailFile(null); setPreview(null);
     onClose();
   };
 
@@ -118,16 +125,7 @@ const AddPostModal: React.FC<AddPostModalProps> = ({ visible, onClose, onSubmit,
 
           <div className={styles.formGroup}>
             <label htmlFor="add-content" className={styles.formLabel}>Nội dung</label>
-            <textarea
-              id="add-content"
-              value={content}
-              onChange={e => setContent(e.target.value)}
-              className={styles.formControl}
-              placeholder="Nội dung bài viết"
-              required
-              rows={6}
-              maxLength={10000}
-            />
+            <RichTextEditor value={content} onChange={setContent} />
             {errors.content && <div className={styles.formError} role="alert">{errors.content}</div>}
           </div>
 

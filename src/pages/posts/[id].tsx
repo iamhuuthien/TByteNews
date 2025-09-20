@@ -4,6 +4,10 @@ import supabase from '../../utils/supabaseClient';
 import Head from 'next/head';
 import LoadingSpinner from '../../components/UI/LoadingSpinner';
 import styles from '../../styles/postDetail.module.css';
+import * as createDOMPurifyModule from 'isomorphic-dompurify';
+
+const createDOMPurify = (createDOMPurifyModule as any).default ?? createDOMPurifyModule;
+const DOMPurify = createDOMPurify(globalThis as any);
 
 interface Post {
   id: string;
@@ -33,15 +37,12 @@ const PostDetailPage: React.FC = () => {
       setErrorMessage(null);
 
       try {
-        // Avoid strict supabase generic typing to prevent TS generic mismatch errors;
-        // cast response.data to Post when ready.
         const res = await supabase
           .from('posts')
           .select('id, title, content, thumbnail, created_at, views')
           .eq('id', postId)
           .single();
 
-        // res may be typed loosely depending on Supabase client version
         const data = (res as any).data as Post | null;
         const error = (res as any).error;
 
@@ -53,16 +54,14 @@ const PostDetailPage: React.FC = () => {
 
         setPost(data || null);
 
-        // fire-and-forget increment views using async IIFE to avoid using .catch on builder
         (async () => {
           try {
             await supabase.rpc('increment_views', { row_id: postId });
           } catch {
-            /* intentionally ignore increment errors */
+            /* ignore */
           }
         })();
       } catch (err) {
-        // Log for debugging, show friendly message to user
         // eslint-disable-next-line no-console
         console.error('Failed to load post:', err);
         if (isMounted) {
@@ -75,9 +74,7 @@ const PostDetailPage: React.FC = () => {
 
     fetchPost();
 
-    return () => {
-      isMounted = false; // cleanup: prevent state updates after unmount
-    };
+    return () => { isMounted = false; };
   }, [id]);
 
   if (loading) {
@@ -88,15 +85,16 @@ const PostDetailPage: React.FC = () => {
     );
   }
 
-  if (errorMessage) {
-    return <div className={styles.noPost}>{errorMessage}</div>;
-  }
-
-  if (!post) {
-    return <div className={styles.noPost}>Không tìm thấy bài viết</div>;
-  }
+  if (errorMessage) return <div className={styles.noPost}>{errorMessage}</div>;
+  if (!post) return <div className={styles.noPost}>Không tìm thấy bài viết</div>;
 
   const plainTextContent = post.content.replace(/<[^>]+>/g, '').substring(0, 150);
+  const safeHtml = DOMPurify.sanitize(post.content || '', {
+    ALLOWED_TAGS: [
+      'a','b','i','u','strong','em','p','br','ul','ol','li','h1','h2','h3','img','figure','figcaption','blockquote'
+    ],
+    ALLOWED_ATTR: ['href','target','rel','src','alt','title','class','style'],
+  });
 
   return (
     <>
@@ -110,6 +108,7 @@ const PostDetailPage: React.FC = () => {
 
       <div className={styles.pageWrapper}>
         <div className={styles.postDetailCard}>
+          {/* back button + header unchanged */}
           <div className={styles.backButtonWrapper}>
             <button
               onClick={() => router.back()}
@@ -131,10 +130,7 @@ const PostDetailPage: React.FC = () => {
               src={post.thumbnail || '/default-avatar.png'}
               alt="Thumbnail"
               className={styles.postAvatar}
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.src = 'https://via.placeholder.com/48';
-              }}
+              onError={(e) => { const t = e.target as HTMLImageElement; t.src = 'https://via.placeholder.com/48'; }}
             />
             <div>
               <h1 className={styles.postTitle}>{post.title}</h1>
@@ -153,21 +149,21 @@ const PostDetailPage: React.FC = () => {
               src={post.thumbnail}
               alt={post.title}
               className={styles.postImage}
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.src = 'https://via.placeholder.com/800x350';
-              }}
+              onError={(e) => { const t = e.target as HTMLImageElement; t.src = 'https://via.placeholder.com/800x350'; }}
             />
           )}
 
-          <div className={styles.postContent} dangerouslySetInnerHTML={{ __html: post.content }} />
+          <div className={styles.postContent} dangerouslySetInnerHTML={{ __html: safeHtml }} />
 
           <div className={styles.shareButtons}>
+            {/* share buttons unchanged */}
             <button
               onClick={() =>
+                typeof window !== 'undefined' &&
                 window.open(
                   `https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(post.title)}`,
-                  '_blank'
+                  '_blank',
+                  'noopener,noreferrer'
                 )
               }
               className={`${styles.shareButton} ${styles.twitterShare}`}
@@ -178,9 +174,11 @@ const PostDetailPage: React.FC = () => {
 
             <button
               onClick={() =>
+                typeof window !== 'undefined' &&
                 window.open(
                   `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`,
-                  '_blank'
+                  '_blank',
+                  'noopener,noreferrer'
                 )
               }
               className={`${styles.shareButton} ${styles.facebookShare}`}
@@ -191,9 +189,11 @@ const PostDetailPage: React.FC = () => {
 
             <button
               onClick={() =>
+                typeof window !== 'undefined' &&
                 window.open(
                   `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(window.location.href)}&title=${encodeURIComponent(post.title)}`,
-                  '_blank'
+                  '_blank',
+                  'noopener,noreferrer'
                 )
               }
               className={`${styles.shareButton} ${styles.linkedinShare}`}

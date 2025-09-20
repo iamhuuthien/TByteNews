@@ -1,5 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from '../../styles/adminModal.module.css';
+import RichTextEditor from '../Editor/RichTextEditor';
+import * as createDOMPurifyModule from 'isomorphic-dompurify';
+
+const createDOMPurify = (createDOMPurifyModule as any).default ?? createDOMPurifyModule;
+const DOMPurify = createDOMPurify(globalThis as any);
 
 interface EditPostModalProps {
   visible: boolean;
@@ -42,7 +47,6 @@ const EditPostModal: React.FC<EditPostModalProps> = ({
     }
   }, [editData, visible]);
 
-  // autofocus when modal opens and preserve focus restore
   useEffect(() => {
     if (visible) {
       prevActiveEl.current = document.activeElement;
@@ -54,7 +58,13 @@ const EditPostModal: React.FC<EditPostModalProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSubmit({ title, content, thumbnail, thumbnailFile });
+    const clean = DOMPurify.sanitize(content, {
+      ALLOWED_TAGS: [
+        'a','b','i','u','strong','em','p','br','ul','ol','li','h1','h2','h3','img','figure','figcaption','blockquote'
+      ],
+      ALLOWED_ATTR: ['href','target','rel','src','alt','title','class','style'],
+    });
+    await onSubmit({ title, content: clean, thumbnail, thumbnailFile });
     onClose();
   };
 
@@ -108,16 +118,7 @@ const EditPostModal: React.FC<EditPostModalProps> = ({
 
           <div className={styles.formGroup}>
             <label htmlFor="edit-content" className={styles.formLabel}>Nội dung</label>
-            <textarea
-              id="edit-content"
-              value={content}
-              onChange={e => setContent(e.target.value)}
-              className={styles.formControl}
-              placeholder="Nội dung bài viết"
-              required
-              rows={6}
-              maxLength={10000}
-            />
+            <RichTextEditor value={content} onChange={setContent} />
           </div>
 
           <div className={styles.formGroup}>
